@@ -4,6 +4,17 @@ One folder per lesson, in dependency order. See
 [`docs/handbook-method.md`](../docs/handbook-method.md) for the lesson anatomy
 and conventions.
 
+## Index (built so far)
+
+The full plan is [`docs/syllabus.md`](../docs/syllabus.md) (39 lessons); lessons
+are built one at a time in syllabus order. Built so far:
+
+| # | Lesson | Type | What it covers |
+|---|--------|------|----------------|
+| 01 | [LLMs, Tokens, and Prompting](./01-llms-tokens-and-prompting/README.md) | theory | What an LLM is & autoregressive generation; tokens & context window; prompting & in-context learning; sampling (temperature/top-p) |
+| 02 | [Embeddings and Search](./02-embeddings-and-search/README.md) | theory | Embeddings & vector similarity (cosine); semantic vs keyword search; parametric vs non-parametric knowledge |
+| 03 | [Why RAG, and What It Is](./03-why-rag-and-what-it-is/README.md) | theory | Why RAG exists; what RAG is; the index→retrieve→augment→generate pipeline; Naive/Advanced/Modular paradigms |
+
 Each lesson:
 
 - lives in its own folder (e.g. `01-what-is-rag/`);
@@ -22,7 +33,7 @@ Each lesson:
 From the repo root:
 
 ```bash
-uv run python -m lessons.<NN-slug>.demo      # e.g. lessons.03-faithfulness.demo
+uv run python -m lessons.<NN-slug>.demo      # e.g. lessons.05-minimal-end-to-end-rag.demo
 ```
 
 `uv run` uses the project venv; `python -m` puts the repo root on the import
