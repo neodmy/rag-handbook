@@ -10,6 +10,13 @@ See [`CLAUDE.md`](./CLAUDE.md) for the working principles — especially the
 **Evidence and honesty** rules that govern what gets committed here — and
 [`docs/logbook.md`](./docs/logbook.md) for current status and continuity.
 
+## Lessons
+
+The handbook is the lessons. **Start here → [`lessons/`](./lessons/README.md)**
+for the index of lessons built so far; the full plan is in
+[`docs/syllabus.md`](./docs/syllabus.md) (39 lessons, built one at a time in
+dependency order).
+
 ## Stack
 
 - **uv** — environment + dependency management (`.python-version` pins 3.12)
