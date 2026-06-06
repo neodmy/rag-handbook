@@ -39,7 +39,11 @@ operationalizes both for a single lesson.
    Never show output you did not produce.
 6. **Self-review** against the Definition of Done. Run the validator
    (`scripts/validate_lesson.py`).
-7. **Hand to the user** for review before moving on. One lesson at a time.
+7. **Update the index.** Add a row for the new lesson to the "Index (built so
+   far)" table in `lessons/README.md` (number, linked title, type, one-line
+   coverage). This table lists only built lessons; the full plan stays in
+   `docs/syllabus.md`.
+8. **Hand to the user** for review before moving on. One lesson at a time.
 
 ## Lesson structure (gradual release, adapted to written self-study)
 
