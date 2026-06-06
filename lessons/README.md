@@ -14,6 +14,7 @@ are built one at a time in syllabus order. Built so far:
 | 01 | [LLMs, Tokens, and Prompting](./01-llms-tokens-and-prompting/README.md) | theory | What an LLM is & autoregressive generation; tokens & context window; prompting & in-context learning; sampling (temperature/top-p) |
 | 02 | [Embeddings and Search](./02-embeddings-and-search/README.md) | theory | Embeddings & vector similarity (cosine); semantic vs keyword search; parametric vs non-parametric knowledge |
 | 03 | [Why RAG, and What It Is](./03-why-rag-and-what-it-is/README.md) | theory | Why RAG exists; what RAG is; the index→retrieve→augment→generate pipeline; Naive/Advanced/Modular paradigms |
+| 04 | [Architecture and Model Strategy](./04-architecture-and-model-strategy/README.md) | theory | RAG vs long-context; what fine-tuning is + RAG vs fine-tuning; RAFT; CAG; when *not* to use RAG; choosing the generator |
 
 Each lesson:
 

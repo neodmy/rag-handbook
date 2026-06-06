@@ -55,11 +55,11 @@ Phased build:
 |------|-----------|--------|
 | `CLAUDE.md` | Working principles (evidence rules, language, lesson conventions). Read first. | Reframed to build+evaluate; points to this logbook. |
 | `docs/handbook-method.md` | The pedagogical method + lesson anatomy + registry rules. | Reframed to build+evaluate. |
-| `docs/sources.md` | Verified source registry (§1–§14). Lessons cite only from here. | ~93 sources, all verified. "To verify" section empty. §14 (build engineering) added 2026-06-06. §12 gained Mikolov et al. NAACL 2013 (*Linguistic Regularities*) for L02; word2vec entry re-scoped (it does not originate the king/queen analogy). |
+| `docs/sources.md` | Verified source registry (§1–§14). Lessons cite only from here. | ~93 sources, all verified. "To verify" section empty. §14 (build engineering) added 2026-06-06. §12 gained Mikolov et al. NAACL 2013 (*Linguistic Regularities*) for L02; word2vec entry re-scoped (it does not originate the king/queen analogy). L04 used existing §1 entries (no new sources); fixed RAG-vs-LC affiliation Google → **Google DeepMind**. |
 | `docs/concept-map.md` | Concept universe + module dependency graph (M0–M14), each concept tagged to a source. | Expanded; build+evaluate scope. Build-side audit (2026-06-06) added architecture/generation-craft/vector-layer/text-to-SQL/reliability; M13 distributed to stages; ingestion+retrieval split into M2/M3. All tag refs resolve to the registry. |
 | `docs/syllabus.md` | Phase-2 artifact: the ordered lesson plan derived from the concept map. | **APPROVED — 39 lessons (re-approved 2026-06-06).** Was 38; inserted L17 `learned-sparse-retrieval` (SPLADE/COIL) after hybrid (L16); renumbered former 17–38 → 18–39; prereqs remapped; no-forward-ref re-checked (executed, passes). Phase 3 builds from here (L01–L02 done). |
 | `.claude/skills/authoring-lessons/` | Skill to author lessons (SKILL.md + lesson-template.md + tested `scripts/validate_lesson.py`). | Working; validator tested. |
-| `lessons/` | One folder per lesson (built in Phase 3). | **L01–L03 DONE** (`01-llms-tokens-and-prompting`, `02-embeddings-and-search`, `03-why-rag-and-what-it-is` — all theory; validator green; user-reviewed). Plus `README.md` conventions. |
+| `lessons/` | One folder per lesson (built in Phase 3). | **L01–L04 DONE** (`01-llms-tokens-and-prompting`, `02-embeddings-and-search`, `03-why-rag-and-what-it-is`, `04-architecture-and-model-strategy` — all theory; validator green; user-reviewed). Plus `README.md` conventions + built-lessons index. |
 | `ragas_lab/` | Shared importable infra: `config.py` (pydantic-settings), `clients.py` (RAGAS judge LLM + embeddings via Ollama). | Working; `uv run pytest` green. |
 | `tests/` | Smoke tests for the scaffolding. | 2 passing. |
 
@@ -166,14 +166,32 @@ Work" flagged as arXiv metadata not prose. Used Lost in the Middle [3] black-box
 post-retrieval reordering. Verified Gao's exact wording at the primary (v5 full text via a
 research subagent) before teaching it. Validator green; user-reviewed.
 
-**Next session: build L04 `architecture-and-model-strategy`** (type `theory`; prereq L03)
-via the `authoring-lessons` skill, same per-lesson mini-loop: deep per-lesson source
-research → write theory with citations → run+verify any code → self-review against
-the evidence rules → user review. L04 takes up what L03 deferred: RAG vs long-context;
-what fine-tuning is + RAG vs fine-tuning; RAFT; CAG; when NOT to use RAG; choosing the
-generator. Sources already in §1 (RAG-vs-LC, FT-vs-Retrieval, RAFT, CAG) — re-verify the
-exact wording per-lesson before citing. Build lessons strictly in syllabus order; each
-lesson's `## Prerequisites` are the lower-numbered lessons listed in its syllabus row.
+**L04 `architecture-and-model-strategy` is DONE** (theory, prereq L03): takes up what L03
+deferred — the architecture decision. Two levers for giving an LLM new knowledge: *change
+the prompt* (RAG / long-context / CAG — in-context, weights untouched [Lewis]) vs *change
+the weights* (**fine-tuning**, defined here against Brown's "no gradient updates"). Then the
+comparisons: RAG vs fine-tuning (Ovadia — RAG "consistently outperforms" *unsupervised* FT
+for knowledge injection; FT is for behavior, not facts); RAG vs long-context (Li et al.,
+Google DeepMind — LC wins quality when resourced, RAG wins cost; Self-Route routes per query
+by answerability); the hybrids RAFT (FT + RAG, ignore distractors) and CAG (preload a bounded
+corpus + cache state, no retrieval — only when the corpus fits); a *when-not-to-use-RAG*
+decision table; and generator-selection criteria (context window, grounding/abstention,
+cost/latency — no model prescribed). Worked example: L03's help-desk in three corpus profiles.
+**No registry change** — all 4 §1 sources (RAG-vs-LC, FT-vs-Retrieval, RAFT, CAG) plus
+Lewis/Gao/Brown/Lost-in-the-Middle/Anthropic-§14 were already verified; a verification subagent
+re-fetched the exact quotable wording at each primary before citing. Flagged in-lesson: preprint
+statuses; Ovadia scoped to *unsupervised* FT; CAG's KV-cache detail is body-not-abstract (not
+quoted verbatim); "FT for behavior" marked as engineering consensus, not a measured claim. Fixed
+the RAG-vs-LC affiliation in the registry (Google → Google DeepMind). Validator green; user-reviewed.
+
+**Next session: build L05 `minimal-end-to-end-rag`** (type **`theory+practice`** — the first lesson
+with runnable code; prereq L04) via the `authoring-lessons` skill, same per-lesson mini-loop, but
+now with the practice arm: wire a runnable naive RAG end-to-end (load → chunk → embed → retrieve →
+generate) with an orchestration framework, **run it** with `uv run python -m lessons.05-minimal-end-to-end-rag.demo`
+and paste the **real** output. This introduces the orchestration-framework layer and is the baseline
+the rest of the handbook measures/improves. Verify framework APIs via Context7 before writing code.
+Build lessons strictly in syllabus order; each lesson's `## Prerequisites` are the lower-numbered
+lessons listed in its syllabus row; per skill step 7, add L05's row to the `lessons/README.md` index.
 
 (Scope alignment across `CLAUDE.md`, `README.md`, `handbook-method.md`, and the
 authoring skill/template is **done** — all now framed as "build + evaluate".)
@@ -417,3 +435,28 @@ authoring skill/template is **done** — all now framed as "build + evaluate".)
 - **Left off at:** L03 done & user-approved; committed & pushed. **Next: L04
   `architecture-and-model-strategy`** (`theory`, prereq L03). Reminder for the next
   build: per the new skill step 7, add L04's row to the `lessons/README.md` index.
+
+### 2026-06-07 — Phase 3: L04 built
+- Built **L04 `lessons/04-architecture-and-model-strategy/README.md`** (type `theory`,
+  prereq L03) via the `authoring-lessons` skill — the architecture-decision lesson L03
+  deferred. Frame: two levers for new knowledge — *change the prompt* (RAG / long-context /
+  CAG, in-context, weights untouched) vs *change the weights* (**fine-tuning**, defined here
+  against Brown's "no gradient updates"). Then: RAG vs FT (Ovadia — RAG "consistently
+  outperforms" *unsupervised* FT for knowledge injection; FT for behavior); RAG vs long-context
+  (Li et al., Google DeepMind — LC wins quality when resourced, RAG wins cost; **Self-Route**);
+  hybrids **RAFT** (FT+RAG, ignore distractors) and **CAG** (preload bounded corpus + cache,
+  skip retrieval); a *when-NOT-to-use-RAG* decision table; generator-selection criteria
+  (context window / grounding+abstention / cost+latency — no model prescribed). Worked example:
+  L03's help-desk across three corpus profiles (static→CAG/LC; large+volatile→RAG; JSON+distraction→RAG+RAFT/FT).
+- **Verification subagent** re-fetched exact quotable wording at each primary before citing
+  (2407.16833, 2312.05934, 2403.10131, 2412.15605, plus Gao 2312.10997). **No registry change** —
+  all sources already verified. Flagged in-lesson: preprint statuses; Ovadia scoped to *unsupervised*
+  FT (not all FT); CAG's KV-cache detail is body-not-abstract (used the verbatim "caching its runtime
+  parameters" instead); "FT for behavior" marked engineering consensus, not a measured claim; no
+  specific generator model prescribed (versions change fast).
+- **Registry fix:** corrected the RAG-vs-LC (2407.16833) affiliation **Google → Google DeepMind**
+  (caught during verification). Validator green; index row added to `lessons/README.md`; user-reviewed.
+- **Left off at:** L04 done & user-approved; committed & pushed. **Next: L05 `minimal-end-to-end-rag`**
+  (`theory+practice` — first lesson with runnable code; prereq L04). Per skill step 5, the practice
+  arm must run (`uv run python -m lessons.05-minimal-end-to-end-rag.demo`) with real output pasted;
+  verify framework APIs via Context7 first. Per step 7, add L05's row to the index.

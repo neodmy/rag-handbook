@@ -35,7 +35,7 @@ added §14 + entries to §1/§3; all fetched at the primary this session).
   — Liu, Lin, Hewitt, Paranjape, et al. TACL 2023. **high**.
   Backs: positional bias in long contexts (the U-shaped curve) — how a generator uses retrieved context, and why chunk ordering matters.
 - **[Retrieval Augmented Generation or Long-Context LLMs? A Comprehensive Study and Hybrid Approach](https://arxiv.org/abs/2407.16833)**
-  — Li, et al. (Google). EMNLP 2024 (industry track). **high**.
+  — Li, et al. (Google DeepMind). EMNLP 2024 (industry track). **high**.
   Backs: the RAG-vs-long-context architecture decision — long-context wins on quality when resourced, RAG wins on cost; the Self-Route query router. *Verified at arXiv abstract 2026-06-06.*
 - **[Fine-Tuning or Retrieval? Comparing Knowledge Injection in LLMs](https://arxiv.org/abs/2312.05934)**
   — Ovadia, Brief, Mishaeli, Elisha (Microsoft). arXiv:2312.05934, 2023–24. **medium** (widely-cited preprint; venue not confirmed at primary).
