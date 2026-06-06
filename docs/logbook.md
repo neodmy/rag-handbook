@@ -57,6 +57,7 @@ Phased build:
 | `docs/handbook-method.md` | The pedagogical method + lesson anatomy + registry rules. | Reframed to build+evaluate. |
 | `docs/sources.md` | Verified source registry (§1–§14). Lessons cite only from here. | ~92 sources, all verified. "To verify" section empty. §14 (build engineering) added 2026-06-06. |
 | `docs/concept-map.md` | Concept universe + module dependency graph (M0–M14), each concept tagged to a source. | Expanded; build+evaluate scope. Build-side audit (2026-06-06) added architecture/generation-craft/vector-layer/text-to-SQL/reliability; M13 distributed to stages; ingestion+retrieval split into M2/M3. All tag refs resolve to the registry. |
+| `docs/syllabus.md` | Phase-2 artifact: the ordered lesson plan (38 lessons) derived from the concept map. | **APPROVED (2026-06-06)** — eval-driven progressive arc; no-forward-ref check passes; committed. Phase 3 builds lessons from here, starting with L01. |
 | `.claude/skills/authoring-lessons/` | Skill to author lessons (SKILL.md + lesson-template.md + tested `scripts/validate_lesson.py`). | Working; validator tested. |
 | `lessons/` | One folder per lesson (built in Phase 3). | Only `README.md` (conventions) — no lessons yet. |
 | `ragas_lab/` | Shared importable infra: `config.py` (pydantic-settings), `clients.py` (RAGAS judge LLM + embeddings via Ollama). | Working; `uv run pytest` green. |
@@ -89,8 +90,10 @@ Phased build:
 - **Source registry tiers**: high (peer-reviewed / official docs / standard),
   medium (cited preprint / official model card / single-vendor), low. Paywalled
   primaries confirmed via Crossref/Semantic Scholar DOI and flagged as such.
-- **Git**: repo is `git init`-ed but **nothing is committed yet** — the entire
-  working state is untracked. Commit only when the user asks.
+- **Git**: remote `origin` = `git@github.com:neodmy/rag-handbook` (branch `main`).
+  Two commits pushed: `0dc6450` (initial scaffold + Phase 0/1) and `54c1a06`
+  (build-side audit + concept-map restructure M0–M14). **`docs/syllabus.md` is
+  uncommitted** (pending the approval gate). Commit only when the user asks.
 
 ## Current state (as of 2026-06-06)
 
@@ -109,9 +112,23 @@ Phased build:
   but **kept deferred** by user decision. (Module numbers reflect the later
   M2/M3 split + renumber; the audit happened before it.)
 
-**Phase 2 — derive the syllabus** (`docs/syllabus.md`): order the concept map
-into modules → lessons, each with type + `## Prerequisites`; verify no forward
-references; present for the **approval gate** before any lesson is written.
+**Phase 2 — derive the syllabus** (`docs/syllabus.md`): **DRAFT DONE (revised
+twice after an adversarial audit), at the approval gate.** **38 lessons** in
+global teaching order, **eval-driven progressive** arc: runnable baseline early
+(L05), "why eval is hard" right after (L06), then build→measure→improve per stage.
+Methodology is also progressive: an `interpreting-results` primer (L22 — held-out
++ "is the delta real?") sits right before the first improvement; deep
+measurement-validity methodology is the capstone (L35). RAG security (indirect
+prompt injection) split into its own build-time lesson (L29). No-forward-reference
+check passes (script).
+
+**Syllabus APPROVED (2026-06-06) and committed.** **Phase 3 starts in the next
+session.** Begin with **lesson 01 `llms-tokens-and-prompting`** (type `theory`,
+no prereqs) via the `authoring-lessons` skill, following the per-lesson mini-loop:
+deep per-lesson source research → write theory with citations → run+verify any
+code → self-review against the evidence rules → user review. Build lessons
+strictly in syllabus order; each lesson's `## Prerequisites` are the lower-numbered
+lessons listed in its syllabus row.
 
 (Scope alignment across `CLAUDE.md`, `README.md`, `handbook-method.md`, and the
 authoring skill/template is **done** — all now framed as "build + evaluate".)
@@ -123,7 +140,8 @@ authoring skill/template is **done** — all now framed as "build + evaluate".)
   caching, judge calibration, safety/toxicity eval, multi-turn/conversational eval.
 - Consider recording in `handbook-method.md` the rule "coverage audits bias toward
   flagging" (lesson from this session).
-- Commit the base state when the user approves.
+- Syllabus approved & committed; **Phase 3 (build lessons) starts next session at
+  L01**. Lesson code/data live in `lessons/NN-slug/`; reusable infra in `ragas_lab/`.
 
 ---
 
@@ -150,6 +168,36 @@ authoring skill/template is **done** — all now framed as "build + evaluate".)
 - Renamed project `ragas` → `rag-handbook` (folder + pyproject `name`); rebuilt
   the venv at the new path; pytest + ruff green.
 - **Left off at:** ready to start Phase 2 (syllabus). Nothing committed to git yet.
+
+### 2026-06-06 — Phase 2: draft syllabus + adversarial audit + revision
+- Derived `docs/syllabus.md` from the concept map (first cut: 35 lessons,
+  build-first then eval).
+- **Adversarial audit** (completeness + ordering): extracted all 117 map concepts
+  and matched each to a lesson — coverage near-complete (only "eval-methodology
+  surveys" unnamed). Flagged: no end-to-end baseline lesson; eval fully
+  back-loaded vs the repo's eval-driven ethos; MTEB used (L09) before taught;
+  L04 assumed fine-tuning the primer excludes; stats taught late.
+- **User decisions:** add an **early runnable baseline** (quickstart) and make the
+  course **eval-driven & progressive**.
+- **Revised to 36 lessons** with a build→measure→improve arc per stage: baseline
+  L05, "why eval is hard" L06, retrieval build → retrieval eval → query
+  understanding, generation build → generation eval, suites/methodology/production/
+  advanced. Cheap audit fixes applied (MTEB intro in L11, fine-tuning framing in
+  L04, eval-methodology named in L32, RAGAS prereq). No-forward-ref check re-run:
+  clean (36 lessons).
+- **Second revision (same day):** applied three pedagogical refinements — (1)
+  pulled a statistics **primer** forward to L22 (`interpreting-results`: held-out
+  + significance/power) so the first "X improved Y" claim is made with hygiene,
+  keeping deep methodology as the L35 capstone; (2) **split RAG security** (indirect
+  prompt injection) out of the output-mechanics lesson into its own build-time
+  lesson (L29); (3) re-cut production — moved request-path reliability into the
+  safe-operation lesson (L37). Now **38 lessons**; no-forward-ref check clean.
+- **Syllabus APPROVED by the user (2026-06-06)**; committed & pushed alongside
+  these logbook updates.
+- **Left off at:** Phase 2 complete. **Next session: begin Phase 3 — build
+  lesson 01 (`llms-tokens-and-prompting`) via the `authoring-lessons` skill**,
+  then proceed in syllabus order. Phases 0–2 done; registry frozen at ~92 sources
+  (extend only via verified per-lesson research).
 
 ### 2026-06-06 — Build-side concept-map audit (Tier 1 incorporated)
 - Ran a 3rd adversarial audit, this time biased to the **build** side (5 parallel
