@@ -55,11 +55,11 @@ Phased build:
 |------|-----------|--------|
 | `CLAUDE.md` | Working principles (evidence rules, language, lesson conventions). Read first. | Reframed to build+evaluate; points to this logbook. |
 | `docs/handbook-method.md` | The pedagogical method + lesson anatomy + registry rules. | Reframed to build+evaluate. |
-| `docs/sources.md` | Verified source registry (§1–§14). Lessons cite only from here. | ~92 sources, all verified. "To verify" section empty. §14 (build engineering) added 2026-06-06. |
+| `docs/sources.md` | Verified source registry (§1–§14). Lessons cite only from here. | ~93 sources, all verified. "To verify" section empty. §14 (build engineering) added 2026-06-06. §12 gained Mikolov et al. NAACL 2013 (*Linguistic Regularities*) for L02; word2vec entry re-scoped (it does not originate the king/queen analogy). |
 | `docs/concept-map.md` | Concept universe + module dependency graph (M0–M14), each concept tagged to a source. | Expanded; build+evaluate scope. Build-side audit (2026-06-06) added architecture/generation-craft/vector-layer/text-to-SQL/reliability; M13 distributed to stages; ingestion+retrieval split into M2/M3. All tag refs resolve to the registry. |
 | `docs/syllabus.md` | Phase-2 artifact: the ordered lesson plan (38 lessons) derived from the concept map. | **APPROVED (2026-06-06)** — eval-driven progressive arc; no-forward-ref check passes; committed. Phase 3 builds lessons from here, starting with L01. |
 | `.claude/skills/authoring-lessons/` | Skill to author lessons (SKILL.md + lesson-template.md + tested `scripts/validate_lesson.py`). | Working; validator tested. |
-| `lessons/` | One folder per lesson (built in Phase 3). | **L01 `01-llms-tokens-and-prompting` DONE** (theory; validator green; user-reviewed). Plus `README.md` conventions. |
+| `lessons/` | One folder per lesson (built in Phase 3). | **L01 `01-llms-tokens-and-prompting` DONE** and **L02 `02-embeddings-and-search` DONE** (both theory; validator green; user-reviewed). Plus `README.md` conventions. |
 | `ragas_lab/` | Shared importable infra: `config.py` (pydantic-settings), `clients.py` (RAGAS judge LLM + embeddings via Ollama). | Working; `uv run pytest` green. |
 | `tests/` | Smoke tests for the scaffolding. | 2 passing. |
 
@@ -135,8 +135,20 @@ went through three rounds of user-driven restructuring (numeric examples added, 
 moved out of the concept into a single integrative worked example, then collapsed
 into one two-step narrative where peaked↔flat falls out of the loop). Validator green.
 
-**Next session: build L02 `embeddings-and-search`** (type `theory`; prereq L01) via
-the `authoring-lessons` skill, same per-lesson mini-loop: deep per-lesson source
+**L02 `embeddings-and-search` is DONE** (theory, prereq L01): a from-zero primer on
+embeddings & vector similarity (cosine; an intuition for vector dimensionality),
+semantic vs keyword/sparse search (synonymy / vocabulary-mismatch vs exact-token
+failure modes), and parametric vs non-parametric knowledge (the framing RAG is built
+on). Every non-trivial claim verified at the primary this session (delegated to a
+verification subagent: word2vec §1.1, Sentence-BERT abstract, IIR Ch. 6 cosine + Ch. 9
+synonymy, DPR abstract 9–19%, Lewis parametric/non-parametric wording). The registry
+gained one source — Mikolov et al. NAACL 2013 *Linguistic Regularities* (the real
+origin of the king/queen analogy) — and the word2vec entry was re-scoped accordingly.
+Cosine arithmetic in the worked example checked by hand. Validator green; user-reviewed
+(added a dimensionality-intuition paragraph on user feedback).
+
+**Next session: build L03 `why-rag-and-what-it-is`** (type `theory`; prereqs L01, L02)
+via the `authoring-lessons` skill, same per-lesson mini-loop: deep per-lesson source
 research → write theory with citations → run+verify any code → self-review against
 the evidence rules → user review. Build lessons strictly in syllabus order; each
 lesson's `## Prerequisites` are the lower-numbered lessons listed in its syllabus row.
@@ -292,3 +304,39 @@ authoring skill/template is **done** — all now framed as "build + evaluate".)
 - **Left off at:** L01 done & user-approved. **Next: L02 `embeddings-and-search`**
   (`theory`, prereq L01). Registry frozen at ~92 (extend only via verified
   per-lesson research). This session committed & pushed.
+
+### 2026-06-06 — Phase 3: L02 built
+- Built **L02 `lessons/02-embeddings-and-search/README.md`** (type `theory`, prereq
+  L01) via the `authoring-lessons` skill: a from-zero primer on (1) embeddings &
+  vector similarity (cosine = direction not magnitude; an intuition for what a
+  *dimension* is and why models use hundreds–thousands), (2) semantic vs
+  keyword/**sparse** search (lexical matches words & misses synonyms; dense matches
+  meaning & can miss exact tokens — opposite failure modes, neither universally
+  better), and (3) **parametric vs non-parametric** knowledge (weights vs a queried
+  vector index — the framing RAG is built on).
+- **Verified every non-trivial claim at the primary** via a verification subagent:
+  word2vec §1.1 ("similar words tend to be close"); the king/queen analogy is from
+  the **companion** NAACL paper, not the word2vec paper (attribution trap caught);
+  Sentence-BERT abstract (BERT pairwise ≈ 65h / SBERT ≈ 5s, cosine-comparable);
+  IIR Ch. 6 (vector space model + cosine) and Ch. 9 (synonymy — note "vocabulary
+  mismatch" is community phrasing, IIR says *synonymy*); DPR abstract (dense beats
+  BM25 9–19% top-20); Lewis et al. verbatim "parametric memory … non-parametric
+  memory … dense vector index of Wikipedia."
+- **Registry change:** added **§12** *Linguistic Regularities* (Mikolov, Yih, Zweig,
+  NAACL-HLT 2013, `N13-1090`, **high**, verified at ACL Anthology) for the analogy;
+  **re-scoped** the word2vec (`1301.3781`) entry to state it does *not* originate the
+  analogy (it restates it citing its ref [20]). Net registry ≈ 93.
+- Worked example uses illustrative 3-D toy vectors (flagged); the cosine arithmetic
+  (Q·A=1.44→cos≈0.990, Q·B=0.34→cos≈0.304) was checked by hand. Includes the honest
+  counter-case (exact-token query where keyword wins). Type `theory`, no `demo.py`.
+- **User feedback applied:** added a dimensionality-intuition paragraph to §1 (each
+  number = a coordinate/axis; 3-D visualizable, 1,536-D not, arithmetic identical)
+  and turned the worked-example "3-dimensional" mention into a callback. Validator
+  green after each change.
+- Discussed (no code): dimensions are *not* individually human-interpretable
+  (meaning is distributed; relationships are directions/offsets); embedding
+  dimensionality is a pre-set hyperparameter (Matryoshka only truncates a pre-set
+  max); keyword search ≈ sparse retrieval (sparse names the representation, DPR
+  abstract backs the sparse-vs-dense contrast).
+- **Left off at:** L02 done & user-approved; committed & pushed. **Next: L03
+  `why-rag-and-what-it-is`** (`theory`, prereqs L01, L02).

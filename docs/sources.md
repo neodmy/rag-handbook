@@ -292,7 +292,9 @@ added §14 + entries to §1/§3; all fetched at the primary this session).
 - **[Neural Machine Translation of Rare Words with Subword Units (BPE)](https://aclanthology.org/P16-1162/)**
   — Sennrich, Haddow, Birch. ACL 2016. **high**. Backs: subword tokenization — what tokens are (underpins context windows & cost).
 - **[Efficient Estimation of Word Representations in Vector Space (word2vec)](https://arxiv.org/abs/1301.3781)**
-  — Mikolov, Chen, Corrado, Dean. ICLR 2013 (workshop). **medium** (foundational workshop track). Backs: embedding intuition — text as vectors, nearby = similar meaning.
+  — Mikolov, Chen, Corrado, Dean. ICLR 2013 (workshop). **medium** (foundational workshop track). Backs: embedding intuition — text as vectors, "similar words tend to be close to each other" (§1.1); the word-offset analogy *method* (its own examples, e.g. `biggest − big + small`). **Does not originate the king/queen analogy** — it restates that result citing its ref [20] (the NAACL paper below); attribute the analogy there.
+- **[Linguistic Regularities in Continuous Space Word Representations](https://aclanthology.org/N13-1090/)**
+  — Mikolov, Yih, Zweig. NAACL-HLT 2013. **high** (primary, ACL Anthology). Backs: the canonical `vector("King") − vector("Man") + vector("Woman") ≈ vector("Queen")` analogy and the relation-specific **vector-offset** method (semantic vs syntactic regularities). *Verified at the ACL Anthology primary 2026-06-06.*
 
 ## 13. Ingestion & data pipeline
 
