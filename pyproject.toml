@@ -1,0 +1,57 @@
+[project]
+name = "rag-handbook"
+version = "0.1.0"
+description = "Understanding, building, and evaluating production-grade RAG, from practice with a solid theoretical foundation."
+requires-python = ">=3.12"
+dependencies = [
+    # Pinned: RAGAS is pre-1.0 and can break the API between minors, so the
+    # exact version is part of every experiment's reproducibility contract.
+    "ragas==0.4.3",
+    # WORKAROUND for an upstream RAGAS bug (open as of 2026-06-05).
+    # ragas/llms/base.py hard-imports `langchain_community.chat_models.vertexai`,
+    # which was removed in langchain-community 0.4.x (the langchain 1.x line).
+    # ragas 0.4.3 (Jan 2026) predates langchain 1.x and declares langchain with
+    # no upper bound, so a stock `pip install ragas` now resolves to 1.x and
+    # fails on import: `ModuleNotFoundError: ...chat_models.vertexai`.
+    # Upstream issues: vibrantlabsai/ragas #2741, #2745, #2753 (fix PRs #2739,
+    # #2746, #2749 not merged yet). The minimal fix is langchain-community<0.4.2;
+    # we cap the stack to the 0.3.x line. REMOVE these caps once a patched ragas
+    # release lands. Reproduced and verified by running it (see clients.py).
+    "langchain>=0.3,<1.0",
+    "langchain-core>=0.3,<1.0",
+    "langchain-community>=0.3,<0.4",
+    "pydantic-settings>=2.6",
+    "python-dotenv>=1.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",  # RAGAS scoring (single_turn_ascore) is async
+    "ruff>=0.8",
+    "taskipy>=1.13",
+    "pre-commit>=4.6.0",
+]
+
+# No [build-system] on purpose: this is a uv "virtual" project. uv (>= 0.4)
+# installs the dependencies into the venv but does not build/install the repo
+# itself — there is no package to ship, just experiments. `package = false`
+# makes that explicit. (Verified against uv docs: concepts/projects/layout.)
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+# Shared code lives in the `ragas_lab/` package at the repo root. Put the root
+# on the import path so tests and lesson scripts can `import ragas_lab.*`
+# without installing the project (it is a uv virtual project, package = false).
+pythonpath = ["."]
+
+[tool.taskipy.tasks]
+setup = "uv sync && uv run pre-commit install --install-hooks"
+# Quality
+lint = "ruff check ."
+format = "ruff format ."
+test = "pytest"
+hooks-run = "pre-commit run --all-files"

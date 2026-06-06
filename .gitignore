@@ -1,0 +1,29 @@
+# env
+.env
+.env.local
+.env.*.local
+
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# tool caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# RAGAS / HF datasets local cache (if ever pointed at the repo)
+.cache/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
