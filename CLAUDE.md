@@ -10,7 +10,7 @@ Learning repository / handbook for **understanding, building, and evaluating pro
 
 This repository is a learning artifact: the team uses it to build the expertise needed to build and evaluate production-grade RAG systems to the highest standards. What gets committed here becomes the shared reference the team studies and builds on later, so correctness compounds — and so does any error left unchecked.
 
-> Current state: scaffolded — uv project (Python 3.12), ruff, taskipy, pre-commit, and RAGAS pinned to `0.4.3` are in place; git is initialized. See the Commands and Architecture sections below. Keep them in sync as the project grows; do not invent structure that does not exist.
+> Live status lives in [`docs/logbook.md`](./docs/logbook.md) (read it first) — do **not** duplicate volatile phase/progress state here. Durable facts: a **uv** virtual project (Python 3.12) with ruff/taskipy/pre-commit/pytest; **RAGAS pinned `0.4.3`** with langchain capped to the 0.3.x line (see `pyproject.toml` for the upstream-bug rationale — don't bump without checking). The handbook is delivered as numbered lessons under `lessons/`; see the Commands and Architecture sections below. Keep those two sections in sync as the project grows; do not invent structure that does not exist.
 
 ## Language convention
 
@@ -53,8 +53,24 @@ This repository is how the team learns to build and evaluate production-grade RA
 
 ## Commands
 
-_(TBD: add build/test/run once the environment manager is chosen — e.g. `uv`, `poetry`, or `pip` + venv. RAGAS is a Python library.)_
+Environment: **uv** virtual project (`[tool.uv] package = false`, no `[build-system]`); task shortcuts via **taskipy**. Run everything through `uv run` so the project venv is used.
+
+- **Bootstrap:** `uv sync` (deps only) or `uv run task setup` (also installs pre-commit hooks).
+- **Tests:** `uv run task test` (≡ `uv run pytest`).
+- **Lint / format:** `uv run task lint` (`ruff check .`) / `uv run task format` (`ruff format .`).
+- **Pre-commit on all files:** `uv run task hooks-run`.
+- **Run a lesson's code** (from repo root): `uv run python -m lessons.<NN-slug>.demo` — hyphenated dir names work with `-m`.
+- **Validate a lesson** against the format rules: `uv run python .claude/skills/authoring-lessons/scripts/validate_lesson.py lessons/<NN-slug>`.
 
 ## Architecture
 
-_(TBD: document the structure once code exists — typically: ingestion/indexing, RAG pipeline, evaluation datasets with ground truth, and the RAGAS eval scripts.)_
+The handbook is delivered as **numbered lessons** built one at a time in dependency order. The plan is `docs/syllabus.md` (the teaching order), derived from `docs/concept-map.md` (the concept graph).
+
+- `lessons/<NN-slug>/` — one folder per lesson. `README.md` *is* the lesson; an optional `demo.py` holds runnable practice. `lessons/README.md` documents the conventions; the lesson format/rules are enforced by the validator.
+- `ragas_lab/` — shared importable infra: `config.py` (pydantic-settings) and `clients.py` (RAGAS judge LLM + embeddings via an **OpenAI-compatible client pointed at Ollama** — *not* langchain-ollama; a local `.env` may point Ollama at a non-localhost IP).
+- `datasets/` — evaluation datasets with ground truth; `datasets/README.md` records the RAGAS field contract (`user_input` / `response` / `retrieved_contexts` / `reference`).
+- `tests/` — smoke tests for the scaffolding (`[tool.pytest] pythonpath = ["."]` so `ragas_lab` imports without installing the project).
+- `docs/` — `logbook.md` (status & decisions, read first), `handbook-method.md` (the pedagogy + source-registry rules), `concept-map.md`, `syllabus.md`, and `sources.md` (the **verified** source registry — lessons cite only from here).
+- `.claude/skills/authoring-lessons/` — the skill and `scripts/validate_lesson.py` used to author and check lessons.
+
+Lesson-specific code lives in its `lessons/<NN-slug>/` folder; reusable infra goes in `ragas_lab/`.
