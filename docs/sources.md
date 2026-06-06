@@ -16,7 +16,8 @@ Reputation tiers: `high` (peer-reviewed paper / official docs / standard textboo
 
 Organized by the RAG pipeline and its evaluation, end to end. Selection is driven
 by coverage of the concepts a practitioner must understand to **build and evaluate**
-production RAG — not by convenience. **Last verified:** 2026-06-05.
+production RAG — not by convenience. **Last verified:** 2026-06-06 (build-side audit
+added §14 + entries to §1/§3; all fetched at the primary this session).
 
 > Naming collision to watch: **"CRAG"** refers to two different things below —
 > *Corrective RAG* (a technique, §2) and the *Comprehensive RAG Benchmark* (a
@@ -33,13 +34,28 @@ production RAG — not by convenience. **Last verified:** 2026-06-05.
 - **[Lost in the Middle: How Language Models Use Long Contexts](https://arxiv.org/abs/2307.03172)**
   — Liu, Lin, Hewitt, Paranjape, et al. TACL 2023. **high**.
   Backs: positional bias in long contexts (the U-shaped curve) — how a generator uses retrieved context, and why chunk ordering matters.
+- **[Retrieval Augmented Generation or Long-Context LLMs? A Comprehensive Study and Hybrid Approach](https://arxiv.org/abs/2407.16833)**
+  — Li, et al. (Google). EMNLP 2024 (industry track). **high**.
+  Backs: the RAG-vs-long-context architecture decision — long-context wins on quality when resourced, RAG wins on cost; the Self-Route query router. *Verified at arXiv abstract 2026-06-06.*
+- **[Fine-Tuning or Retrieval? Comparing Knowledge Injection in LLMs](https://arxiv.org/abs/2312.05934)**
+  — Ovadia, Brief, Mishaeli, Elisha (Microsoft). arXiv:2312.05934, 2023–24. **medium** (widely-cited preprint; venue not confirmed at primary).
+  Backs: RAG vs (unsupervised) fine-tuning for knowledge injection — RAG consistently outperforms FT for both previously-seen and entirely new knowledge. *Verified at arXiv abstract 2026-06-06.*
+- **[RAFT: Adapting Language Model to Domain Specific RAG](https://arxiv.org/abs/2403.10131)**
+  — Zhang, Patil, Jain, Shen, …, Zaharia, Stoica, Gonzalez (UC Berkeley). arXiv:2403.10131, 2024. **medium** (cited preprint).
+  Backs: retrieval-augmented fine-tuning — train the generator to use retrieved docs and ignore distractors ("combine RAG + fine-tuning"). *Verified at arXiv abstract 2026-06-06.*
+- **[Don't Do RAG: When Cache-Augmented Generation is All You Need for Knowledge Tasks (CAG)](https://arxiv.org/abs/2412.15605)**
+  — Chan, Chen, Cheng, Huang. arXiv:2412.15605, 2024–25. **medium** (cited preprint).
+  Backs: cache-augmented generation — preload a bounded corpus into the context window + persist the KV cache to bypass real-time retrieval. **Distinct from *semantic* caching** (query→answer caching). *Verified at arXiv abstract 2026-06-06.*
 
 ## 2. Advanced RAG techniques
 
 - **[Precise Zero-Shot Dense Retrieval without Relevance Labels (HyDE)](https://arxiv.org/abs/2212.10496)**
   — Gao, Ma, Lin, Callan. ACL 2023. **high**. Backs: HyDE query transformation.
 - **[Query Rewriting for Retrieval-Augmented Large Language Models](https://arxiv.org/abs/2305.14283)**
-  — Ma, Gong, He, Zhao, et al. EMNLP 2023. **high**. Backs: Rewrite-Retrieve-Read query rewriting.
+  — Ma, Gong, He, Zhao, et al. EMNLP 2023. **high**. Backs: Rewrite-Retrieve-Read query rewriting (and, by extension, conversational query contextualization — rewriting a follow-up into a standalone question).
+- **[Measuring and Narrowing the Compositionality Gap in Language Models (Self-Ask)](https://arxiv.org/abs/2210.03350)**
+  — Press, Zhang, Min, Schmidt, Smith, Lewis. Findings of EMNLP 2023. **high**.
+  Backs: query decomposition — break a complex query into follow-up sub-questions and answer each (optionally via a search engine), then compose. *Verified at arXiv abstract 2026-06-06.*
 - **[Interleaving Retrieval with Chain-of-Thought Reasoning (IRCoT)](https://arxiv.org/abs/2212.10509)**
   — Trivedi, Balasubramanian, Khot, Sabharwal. ACL 2023. **high**. Backs: multi-hop / iterative retrieval.
 - **[Active Retrieval Augmented Generation (FLARE)](https://arxiv.org/abs/2305.06983)**
@@ -99,12 +115,27 @@ production RAG — not by convenience. **Last verified:** 2026-06-05.
 - **[ANN-Benchmarks: A Benchmarking Tool for Approximate Nearest Neighbor Algorithms](https://doi.org/10.1016/j.is.2019.02.006)**
   — Aumüller, Bernhardsson, Faithfull. Information Systems, 2019 ([arXiv:1807.05614](https://arxiv.org/abs/1807.05614)). **high** (peer-reviewed).
   Backs: empirical comparison of ANN algorithms/implementations (recall vs throughput trade-offs).
+- **[Faiss — Guidelines to choose an index](https://github.com/facebookresearch/faiss/wiki/Guidelines-to-choose-an-index)**
+  — Facebook AI Research. Official wiki. **high** (official docs of a widely-used library).
+  Backs: build-time index choice and ANN parameter tuning (HNSW `M`/`efSearch`, IVF `nlist`/`nprobe`), the all-in-RAM constraint, per-vector memory footprint, and quantization (SQ/PQ) options. *Verified 2026-06-06.*
+- **[Binary and Scalar Embedding Quantization for Significantly Faster & Cheaper Retrieval](https://huggingface.co/blog/embedding-quantization)**
+  — Hugging Face / Sentence-Transformers, 2024. Engineering blog with reproducible MTEB benchmarks. **medium** (single-vendor; supporting — pair with the Faiss guidelines above).
+  Backs: int8 / binary embedding quantization and the recall-vs-memory-vs-speed trade-off. *Verified 2026-06-06.*
+- **[Matryoshka Representation Learning](https://arxiv.org/abs/2205.13147)**
+  — Kusupati, et al. NeurIPS 2022. **high**.
+  Backs: nested / truncatable embedding dimensions — cut dimensionality post-hoc to shrink index cost with bounded quality loss (the basis of `dimensions`-style embedding APIs). *Verified at arXiv abstract 2026-06-06.*
+- **[TableRAG: A Retrieval Augmented Generation Framework for Heterogeneous Document Reasoning](https://arxiv.org/abs/2506.10380)**
+  — Yu, Jian, Chen. arXiv:2506.10380, 2025. **medium** (recent preprint).
+  Backs: structured / tabular retrieval via SQL — why flattening + chunking tables disrupts tabular structure and breaks multi-hop / global queries. *Verified at arXiv abstract 2026-06-06.*
+- **[Spider: A Large-Scale Human-Labeled Dataset for Complex and Cross-Domain Semantic Parsing and Text-to-SQL](https://arxiv.org/abs/1809.08887)**
+  — Yu, Zhang, Yang, Yasunaga, …, Radev (Yale). EMNLP 2018. **high**.
+  Backs: the canonical text-to-SQL task and its cross-domain evaluation — retrieval over relational data. *Verified at arXiv abstract 2026-06-06.*
 
 ## 4. Retrieval evaluation (IR metrics & benchmarks)
 
 - **[Introduction to Information Retrieval](https://nlp.stanford.edu/IR-book/)**
   — Manning, Raghavan, Schütze. Cambridge University Press, 2008. **high** (standard textbook).
-  Backs: classical IR — precision@k, recall@k, MAP, MRR (metric foundations) **and** TF-IDF / Okapi BM25 (sparse retrieval, Ch. 6 & 11).
+  Backs: classical IR — precision@k, recall@k, MAP, MRR (metric foundations) **and** TF-IDF / Okapi BM25 (sparse retrieval, Ch. 6 & 11) **and** query expansion / relevance feedback (Ch. 9).
 - **[TREC — Text REtrieval Conference](https://trec.nist.gov/)**
   — NIST. Since 1992. **high** (standard evaluation body). Backs: IR test collections and standardized relevance-based evaluation.
 - **[Cumulated gain-based evaluation of IR techniques (nDCG)](https://doi.org/10.1145/582415.582418)**
@@ -273,6 +304,28 @@ production RAG — not by convenience. **Last verified:** 2026-06-05.
   — Smock, Pesala, Abraham (Microsoft). CVPR 2022. **high**. Backs: table detection & structure recognition in ingestion.
 - **[Deduplicating Training Data Makes Language Models Better](https://arxiv.org/abs/2107.06499)**
   — Lee, Ippolito, et al. (Google/UPenn). ACL 2022. **high**. Backs: corpus deduplication (exact + near-dup) as ingestion hygiene.
+
+## 14. Build engineering: generation craft, serving & reliability
+
+Official framework/API docs backing build-side *engineering patterns* (not peer-reviewed
+concepts). Treated like the §3 framework references (`ParentDocumentRetriever`, pgvector):
+authoritative for the tool's own behavior; pair vendor prescriptive guidance with a concept source.
+
+- **[Anthropic — Reduce hallucinations](https://docs.anthropic.com/en/docs/test-and-evaluate/strengthen-guardrails/reduce-hallucinations)**
+  — Anthropic. Official docs. **medium** (single-vendor prescriptive guidance).
+  Backs: generation-time grounding craft — give the model permission to say "I don't know" (abstention) and ask for word-for-word supporting quotes first (augmentation-prompt grounding). *Verified 2026-06-06.*
+- **[OpenAI — Structured model outputs](https://platform.openai.com/docs/guides/structured-outputs)**
+  — OpenAI. Official API docs. **high** (authoritative for the API behavior).
+  Backs: schema-constrained generation — `json_schema` (strict) guarantees schema adherence where JSON mode does not; the reliable substrate for emitting structured citations. *Verified 2026-06-06.*
+- **[LlamaIndex — Response Synthesizers](https://docs.llamaindex.ai/en/stable/module_guides/querying/response_synthesizers/)**
+  — LlamaIndex. Official framework docs. **high**.
+  Backs: multi-chunk answer-synthesis strategies — `refine`, `compact`, `tree_summarize`, `accumulate` and their cost/latency/quality trade-offs. *Verified 2026-06-06.*
+- **[LangChain — How to add fallbacks to a runnable](https://python.langchain.com/docs/how_to/fallbacks/)**
+  — LangChain. Official framework docs. **high**.
+  Backs: request-path reliability — `with_fallbacks`, retries, and fallback models/routes for graceful degradation. *Verified 2026-06-06.*
+- **[Anthropic — Streaming Messages](https://docs.anthropic.com/en/api/messages-streaming)**
+  — Anthropic. Official API docs. **high** (authoritative for the protocol).
+  Backs: response streaming to the user (the SSE event sequence) — a serving/build primitive that drives time-to-first-token. *Verified 2026-06-06.*
 
 ## To verify before citing
 

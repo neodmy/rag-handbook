@@ -55,8 +55,8 @@ Phased build:
 |------|-----------|--------|
 | `CLAUDE.md` | Working principles (evidence rules, language, lesson conventions). Read first. | Reframed to build+evaluate; points to this logbook. |
 | `docs/handbook-method.md` | The pedagogical method + lesson anatomy + registry rules. | Reframed to build+evaluate. |
-| `docs/sources.md` | Verified source registry (§1–§13). Lessons cite only from here. | ~78 sources, all verified. "To verify" section empty. |
-| `docs/concept-map.md` | Concept universe + module dependency graph (M0–M13), each concept tagged to a source. | Expanded; already framed as "understand, build, and evaluate". All 151 tag refs resolve. |
+| `docs/sources.md` | Verified source registry (§1–§14). Lessons cite only from here. | ~92 sources, all verified. "To verify" section empty. §14 (build engineering) added 2026-06-06. |
+| `docs/concept-map.md` | Concept universe + module dependency graph (M0–M14), each concept tagged to a source. | Expanded; build+evaluate scope. Build-side audit (2026-06-06) added architecture/generation-craft/vector-layer/text-to-SQL/reliability; M13 distributed to stages; ingestion+retrieval split into M2/M3. All tag refs resolve to the registry. |
 | `.claude/skills/authoring-lessons/` | Skill to author lessons (SKILL.md + lesson-template.md + tested `scripts/validate_lesson.py`). | Working; validator tested. |
 | `lessons/` | One folder per lesson (built in Phase 3). | Only `README.md` (conventions) — no lessons yet. |
 | `ragas_lab/` | Shared importable infra: `config.py` (pydantic-settings), `clients.py` (RAGAS judge LLM + embeddings via Ollama). | Working; `uv run pytest` green. |
@@ -96,12 +96,18 @@ Phased build:
 
 - Phases 0 and 1 complete. Concept map expanded after **two adversarial audits**
   (a 3-lens pass, then a deeper 5-lens pass) to a full build+evaluate scope:
-  M0 primer, M1 foundations, M2 ingestion+retrieval, M3 generation/grounding,
-  M4–M12 evaluation (foundations, retrieval eval, generation metrics, faithfulness,
-  LLM-judge, metric suites, datasets/benchmarks, statistics, production/ops &
-  governance), M13 advanced techniques.
-- Source registry at ~78 verified entries across §1–§13; "To verify" is empty.
-- Scope just reframed to a **complete RAG course** (user decision, 2026-06-06).
+  M0 primer, M1 foundations, M2 ingestion, M3 retrieval & query understanding,
+  M4 generation/grounding, M5–M13 evaluation (why-eval, retrieval eval, generation
+  metrics, faithfulness, LLM-judge, metric suites, datasets/benchmarks, statistics,
+  production/ops & governance), M14 iterative & agentic RAG.
+- Source registry at ~92 verified entries across §1–§14; "To verify" is empty.
+- Scope reframed to a **complete RAG course** (user decision, 2026-06-06).
+- A **build-side concept-map audit** (2026-06-06, 5 parallel lenses) added
+  architecture/model-strategy (M1), generation craft (now M4), vector-layer
+  engineering + text-to-SQL (now M3), and request-path reliability (now M13) —
+  all sources verified at the primary. Multimodal RAG and GraphRAG were considered
+  but **kept deferred** by user decision. (Module numbers reflect the later
+  M2/M3 split + renumber; the audit happened before it.)
 
 **Phase 2 — derive the syllabus** (`docs/syllabus.md`): order the concept map
 into modules → lessons, each with type + `## Prerequisites`; verify no forward
@@ -144,6 +150,52 @@ authoring skill/template is **done** — all now framed as "build + evaluate".)
 - Renamed project `ragas` → `rag-handbook` (folder + pyproject `name`); rebuilt
   the venv at the new path; pytest + ruff green.
 - **Left off at:** ready to start Phase 2 (syllabus). Nothing committed to git yet.
+
+### 2026-06-06 — Build-side concept-map audit (Tier 1 incorporated)
+- Ran a 3rd adversarial audit, this time biased to the **build** side (5 parallel
+  research lenses: generation craft, vector-layer engineering, architecture/model
+  strategy, data sources/representations, build engineering & reliability). Every
+  candidate gap required a primary source verified live.
+- Headline finding: M3 was *failure-modes only* (no generation craft), M2 was a
+  *catalogue* (no cost/scale knobs), and there was **no architecture-decision node
+  at all**. User chose to incorporate **all Tier 1**; **kept Tier 2 deferred**
+  (multimodal RAG, GraphRAG stay out despite the audit's argument to promote).
+- Verified 7 arXiv papers + 7 vendor/framework docs at the primary myself
+  (re-confirmed, not trusting subagent summaries): RAG-vs-LongContext (EMNLP'24),
+  FT-vs-Retrieval, RAFT, CAG, TableRAG, Spider, Matryoshka; FAISS guidelines, HF
+  quantization, LlamaIndex synthesizers, LangChain fallbacks, OpenAI structured
+  outputs, Anthropic grounding + streaming. (OpenAI embeddings blog 403'd — used
+  the Matryoshka paper as the primary anchor instead.)
+- Edits: `sources.md` — new **§14** (build engineering) + entries in §1 (RAG-vs-LC,
+  FT-vs-Retrieval, RAFT, CAG) and §3 (FAISS guidelines, quantization, Matryoshka,
+  TableRAG, Spider). `concept-map.md` — M1 architecture cluster, M3 generation
+  craft, M2 vector-layer + text-to-SQL, M12 reliability, M13 conversational
+  contextualization; Coverage check updated (§1–§14, 3rd audit, deferral notes
+  clarifying CAG≠semantic-caching and multi-turn build vs eval). No module
+  renumbering and no Mermaid edges changed.
+- **Follow-up reorg (same day):** distributed the old M13 "advanced techniques"
+  to their stage modules (user chose "distribute to stage" over "capstone"):
+  query-understanding family (rewriting, HyDE, **query expansion**, **query
+  decomposition**, routing, conversational contextualization, fusion) → **M2**;
+  context curation → **M3**; contextual-retrieval enrichment → **M2** (ingestion).
+  M13 slimmed to iterative & agentic control-flow (multi-hop, self-correcting,
+  agentic) and retitled; added `M3 → M13` edge. Two gaps closed: query expansion
+  (`§4: Intro to IR` Ch. 9 — note extended) and query decomposition (added
+  `§2: Self-Ask`, Findings of EMNLP 2023, verified at primary). Note for Phase 2:
+  M2 is now large and will spawn several lessons; the query-understanding
+  sub-cluster is *understood* after M2 but *tuned/evaluated* with M5 metrics, so
+  sequence it after M5.
+- **Module split (same day):** the oversized M2 (it was doing four jobs) was
+  split into **M2 Ingestion** (text engineering: loading/cleaning/chunking/
+  metadata/contextual-enrichment) and **M3 Retrieval & query understanding**
+  (embeddings/index/sparse/dense/hybrid/rerank/vector-layer-engineering/
+  text-to-SQL/query-family). Downstream modules renumbered +1 → final range
+  **M0–M14** (generation = M4, … iterative/agentic = M14). New split edge
+  `M2 → M3`; all `(needs …)` notes recomputed and verified acyclic; `[§N:…]`
+  source tags untouched. Module ≠ lesson: M3 will still spawn several lessons in
+  Phase 2.
+- **Left off at:** map + registry updated and self-consistent (M0–M14); awaiting
+  user review of the changes. Phase 2 (syllabus) still the next milestone.
 
 ### 2026-06-06 — Concept-map module renumbering
 - Renumbered the concept map: the old `M-1` primer is now `M0`, and every later
