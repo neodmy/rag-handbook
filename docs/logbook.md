@@ -59,7 +59,7 @@ Phased build:
 | `docs/concept-map.md` | Concept universe + module dependency graph (M0–M14), each concept tagged to a source. | Expanded; build+evaluate scope. Build-side audit (2026-06-06) added architecture/generation-craft/vector-layer/text-to-SQL/reliability; M13 distributed to stages; ingestion+retrieval split into M2/M3. All tag refs resolve to the registry. |
 | `docs/syllabus.md` | Phase-2 artifact: the ordered lesson plan (38 lessons) derived from the concept map. | **APPROVED (2026-06-06)** — eval-driven progressive arc; no-forward-ref check passes; committed. Phase 3 builds lessons from here, starting with L01. |
 | `.claude/skills/authoring-lessons/` | Skill to author lessons (SKILL.md + lesson-template.md + tested `scripts/validate_lesson.py`). | Working; validator tested. |
-| `lessons/` | One folder per lesson (built in Phase 3). | Only `README.md` (conventions) — no lessons yet. |
+| `lessons/` | One folder per lesson (built in Phase 3). | **L01 `01-llms-tokens-and-prompting` DONE** (theory; validator green; user-reviewed). Plus `README.md` conventions. |
 | `ragas_lab/` | Shared importable infra: `config.py` (pydantic-settings), `clients.py` (RAGAS judge LLM + embeddings via Ollama). | Working; `uv run pytest` green. |
 | `tests/` | Smoke tests for the scaffolding. | 2 passing. |
 
@@ -91,9 +91,9 @@ Phased build:
   medium (cited preprint / official model card / single-vendor), low. Paywalled
   primaries confirmed via Crossref/Semantic Scholar DOI and flagged as such.
 - **Git**: remote `origin` = `git@github.com:neodmy/rag-handbook` (branch `main`).
-  Two commits pushed: `0dc6450` (initial scaffold + Phase 0/1) and `54c1a06`
-  (build-side audit + concept-map restructure M0–M14). **`docs/syllabus.md` is
-  uncommitted** (pending the approval gate). Commit only when the user asks.
+  History: `0dc6450` (initial scaffold + Phase 0/1), `54c1a06` (build-side audit +
+  concept-map restructure M0–M14), `aa014c4` (approved Phase 2 syllabus), and this
+  session's commit (Phase 3 start — L01). Commit only when the user asks.
 
 ## Current state (as of 2026-06-06)
 
@@ -122,13 +122,24 @@ measurement-validity methodology is the capstone (L35). RAG security (indirect
 prompt injection) split into its own build-time lesson (L29). No-forward-reference
 check passes (script).
 
-**Syllabus APPROVED (2026-06-06) and committed.** **Phase 3 starts in the next
-session.** Begin with **lesson 01 `llms-tokens-and-prompting`** (type `theory`,
-no prereqs) via the `authoring-lessons` skill, following the per-lesson mini-loop:
-deep per-lesson source research → write theory with citations → run+verify any
-code → self-review against the evidence rules → user review. Build lessons
-strictly in syllabus order; each lesson's `## Prerequisites` are the lower-numbered
-lessons listed in its syllabus row.
+**Syllabus APPROVED (2026-06-06) and committed.**
+
+**Phase 3 — IN PROGRESS.** **L01 `llms-tokens-and-prompting` is DONE** (theory, no
+prereqs): a from-zero black-box primer on LLMs & autoregressive generation, tokens &
+the context window, prompting & in-context learning, and sampling
+(temperature/top-k/top-p). All claims verified at the primary this session (Holtzman
+full text via ar5iv for the precise top-p/top-k/temperature definitions; Brown
+abstract for the "without any gradient updates" in-context-learning quote); the §12
+registry entries already covered it, so **no registry change**. The sampling section
+went through three rounds of user-driven restructuring (numeric examples added, then
+moved out of the concept into a single integrative worked example, then collapsed
+into one two-step narrative where peaked↔flat falls out of the loop). Validator green.
+
+**Next session: build L02 `embeddings-and-search`** (type `theory`; prereq L01) via
+the `authoring-lessons` skill, same per-lesson mini-loop: deep per-lesson source
+research → write theory with citations → run+verify any code → self-review against
+the evidence rules → user review. Build lessons strictly in syllabus order; each
+lesson's `## Prerequisites` are the lower-numbered lessons listed in its syllabus row.
 
 (Scope alignment across `CLAUDE.md`, `README.md`, `handbook-method.md`, and the
 authoring skill/template is **done** — all now framed as "build + evaluate".)
@@ -252,3 +263,32 @@ authoring skill/template is **done** — all now framed as "build + evaluate".)
   headers, every `(needs …)` cross-module note, the "Coverage check" callouts)
   and the two module-range references in this logbook. No other doc referenced
   module numbers (verified by grep). Source `[§N: …]` tags untouched.
+
+### 2026-06-06 — Phase 3 begins: L01 built
+- Started Phase 3. Built **L01 `lessons/01-llms-tokens-and-prompting/README.md`**
+  (type `theory`, no prereqs) via the `authoring-lessons` skill: a from-zero
+  black-box primer covering (1) LLM & autoregressive generation, (2) tokens &
+  context window, (3) prompting & in-context learning, (4) sampling
+  (temperature/top-k/top-p).
+- **Verified every non-trivial claim at the primary** (not from memory): fetched
+  Holtzman full text via ar5iv for the exact definitions — nucleus/top-p ("smallest
+  set… whose cumulative probability mass exceeds `p`", dynamic nucleus), top-k
+  (fixed count; "differ only in… where to truncate"), temperature ("`t`∈[0,1) skews
+  the distribution towards high probability events"); Brown abstract for the
+  in-context-learning quote ("without any gradient updates or fine-tuning… purely
+  via text"). §12 registry entries already covered all of it → **no registry edit**.
+  WebFetch was blocked by a hook; used context-mode `ctx_fetch_and_index` instead.
+- **Sampling section restructured three times on user feedback** (each round
+  improved it): first added accurate numeric examples (softmax computed with real
+  arithmetic, illustrative logits); then pulled all tables out of "The concept"
+  (now definitions + mental model only: temperature *reshapes*, top-k/top-p
+  *truncate*) into a single integrative **worked example**; finally collapsed that
+  into **one two-step narrative** so the peaked↔flat contrast (top-p adapts, fixed
+  `k` over-/under-includes) falls naturally out of two consecutive loop steps rather
+  than a contrived "Distribution A/B". Also fixed a left-vs-right table-reading
+  inconsistency the user caught.
+- Type stays `theory` (no `demo.py`); all numbers flagged illustrative, the one
+  idealization (Step 2 being "flat" after `Paris`) flagged in-text. Validator green.
+- **Left off at:** L01 done & user-approved. **Next: L02 `embeddings-and-search`**
+  (`theory`, prereq L01). Registry frozen at ~92 (extend only via verified
+  per-lesson research). This session committed & pushed.
