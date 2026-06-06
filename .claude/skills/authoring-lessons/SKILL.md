@@ -44,6 +44,8 @@ operationalizes both for a single lesson.
    coverage). This table lists only built lessons; the full plan stays in
    `docs/syllabus.md`.
 8. **Hand to the user** for review before moving on. One lesson at a time.
+   Once the user approves, close it out with the `shipping-a-lesson` skill
+   (logbook + commit + push).
 
 ## Lesson structure (gradual release, adapted to written self-study)
 
