@@ -91,9 +91,11 @@ Phased build:
   medium (cited preprint / official model card / single-vendor), low. Paywalled
   primaries confirmed via Crossref/Semantic Scholar DOI and flagged as such.
 - **Git**: remote `origin` = `git@github.com:neodmy/rag-handbook` (branch `main`).
-  History: `0dc6450` (initial scaffold + Phase 0/1), `54c1a06` (build-side audit +
-  concept-map restructure M0–M14), `aa014c4` (approved Phase 2 syllabus), and this
-  session's commit (Phase 3 start — L01). Commit only when the user asks.
+  History (milestones): `0dc6450` (initial scaffold + Phase 0/1), `54c1a06`
+  (build-side audit + concept-map restructure M0–M14), `aa014c4` (approved Phase 2
+  syllabus), then Phase 3 lessons L01→L03 and the navigation/workflow commits
+  (lessons index, README link, authoring-skill step 7); latest on `main` is the L03
+  set. Commit only when the user asks.
 
 ## Current state (as of 2026-06-07)
 
@@ -407,5 +409,11 @@ authoring skill/template is **done** — all now framed as "build + evaluate".)
 - Type `theory`, no `demo.py`. Deferred RAG-vs-FT/long-context/RAFT/CAG explicitly to L04
   (no forward refs). Used Lost in the Middle [3] black-box to motivate post-retrieval
   reordering. Validator green; user-reviewed.
+- **Navigation + workflow upkeep (same session):** added an "Index (built so far)"
+  table to `lessons/README.md` (built lessons only; full plan stays in the syllabus);
+  added a **step 7 to the `authoring-lessons` workflow** — "update that index when a
+  lesson ships" — so it stays current; and added a **Lessons section to the root
+  `README.md`** linking to the index + syllabus. All committed & pushed.
 - **Left off at:** L03 done & user-approved; committed & pushed. **Next: L04
-  `architecture-and-model-strategy`** (`theory`, prereq L03).
+  `architecture-and-model-strategy`** (`theory`, prereq L03). Reminder for the next
+  build: per the new skill step 7, add L04's row to the `lessons/README.md` index.
