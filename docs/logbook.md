@@ -59,7 +59,7 @@ Phased build:
 | `docs/concept-map.md` | Concept universe + module dependency graph (M0–M14), each concept tagged to a source. | Expanded; build+evaluate scope. Build-side audit (2026-06-06) added architecture/generation-craft/vector-layer/text-to-SQL/reliability; M13 distributed to stages; ingestion+retrieval split into M2/M3. All tag refs resolve to the registry. |
 | `docs/syllabus.md` | Phase-2 artifact: the ordered lesson plan derived from the concept map. | **APPROVED — 39 lessons (re-approved 2026-06-06).** Was 38; inserted L17 `learned-sparse-retrieval` (SPLADE/COIL) after hybrid (L16); renumbered former 17–38 → 18–39; prereqs remapped; no-forward-ref re-checked (executed, passes). Phase 3 builds from here (L01–L02 done). |
 | `.claude/skills/authoring-lessons/` | Skill to author lessons (SKILL.md + lesson-template.md + tested `scripts/validate_lesson.py`). | Working; validator tested. |
-| `lessons/` | One folder per lesson (built in Phase 3). | **L01 `01-llms-tokens-and-prompting` DONE** and **L02 `02-embeddings-and-search` DONE** (both theory; validator green; user-reviewed). Plus `README.md` conventions. |
+| `lessons/` | One folder per lesson (built in Phase 3). | **L01–L03 DONE** (`01-llms-tokens-and-prompting`, `02-embeddings-and-search`, `03-why-rag-and-what-it-is` — all theory; validator green; user-reviewed). Plus `README.md` conventions. |
 | `ragas_lab/` | Shared importable infra: `config.py` (pydantic-settings), `clients.py` (RAGAS judge LLM + embeddings via Ollama). | Working; `uv run pytest` green. |
 | `tests/` | Smoke tests for the scaffolding. | 2 passing. |
 
@@ -95,7 +95,7 @@ Phased build:
   concept-map restructure M0–M14), `aa014c4` (approved Phase 2 syllabus), and this
   session's commit (Phase 3 start — L01). Commit only when the user asks.
 
-## Current state (as of 2026-06-06)
+## Current state (as of 2026-06-07)
 
 - Phases 0 and 1 complete. Concept map expanded after **two adversarial audits**
   (a 3-lens pass, then a deeper 5-lens pass) to a full build+evaluate scope:
@@ -147,10 +147,30 @@ origin of the king/queen analogy) — and the word2vec entry was re-scoped accor
 Cosine arithmetic in the worked example checked by hand. Validator green; user-reviewed
 (added a dimensionality-intuition paragraph on user feedback).
 
-**Next session: build L03 `why-rag-and-what-it-is`** (type `theory`; prereqs L01, L02)
+**L03 `why-rag-and-what-it-is` is DONE** (theory, prereqs L01/L02): names the whole
+machine — why RAG exists (the three structural limits of a bare LLM: hallucination /
+outdated knowledge / untraceable reasoning, mapped to L02's parametric knowledge),
+what RAG is (one-sentence def anchored in Lewis's parametric + non-parametric pairing;
+two boundaries — *not* fine-tuning, *not* just search), the **index → retrieve →
+augment → generate** pipeline (offline/online ASCII diagram + an honest name-reconciliation
+note: the survey says "indexing, retrieval, generation" with augmentation as one of three
+technique areas; we just draw *augment* as its own box), and the **Naive / Advanced /
+Modular** maturity spectrum (Retrieve-Read + its drawbacks → pre/post-retrieval → modular,
+framed as the build→measure→improve arc). Worked example traces L02's "cancel my plan"
+query through all four stages, showing what each fix buys and where it can still fail
+(retrieval vs generation — seeding the metric split). **No registry change** — the three
+sources were already verified; Gao survey citation pinned to **v5 (27 Mar 2024)**, "Ongoing
+Work" flagged as arXiv metadata not prose. Used Lost in the Middle [3] black-box to motivate
+post-retrieval reordering. Verified Gao's exact wording at the primary (v5 full text via a
+research subagent) before teaching it. Validator green; user-reviewed.
+
+**Next session: build L04 `architecture-and-model-strategy`** (type `theory`; prereq L03)
 via the `authoring-lessons` skill, same per-lesson mini-loop: deep per-lesson source
 research → write theory with citations → run+verify any code → self-review against
-the evidence rules → user review. Build lessons strictly in syllabus order; each
+the evidence rules → user review. L04 takes up what L03 deferred: RAG vs long-context;
+what fine-tuning is + RAG vs fine-tuning; RAFT; CAG; when NOT to use RAG; choosing the
+generator. Sources already in §1 (RAG-vs-LC, FT-vs-Retrieval, RAFT, CAG) — re-verify the
+exact wording per-lesson before citing. Build lessons strictly in syllabus order; each
 lesson's `## Prerequisites` are the lower-numbered lessons listed in its syllabus row.
 
 (Scope alignment across `CLAUDE.md`, `README.md`, `handbook-method.md`, and the
@@ -365,3 +385,27 @@ authoring skill/template is **done** — all now framed as "build + evaluate".)
 - **Re-approved by the user (2026-06-06)**; committed & pushed.
 - **Left off at:** syllabus at 39 lessons, approved & committed. Build order
   unchanged — **next build is still L03** `why-rag-and-what-it-is`.
+
+### 2026-06-07 — Phase 3: L03 built
+- Built **L03 `lessons/03-why-rag-and-what-it-is/README.md`** (type `theory`, prereqs
+  L01/L02) via the `authoring-lessons` skill: (1) **why RAG exists** — the three
+  structural limits of a bare LLM (hallucination / outdated knowledge / untraceable
+  reasoning), each mapped back to L02's parametric knowledge, with a "limitation → what
+  RAG does" table; (2) **what RAG is** — one-sentence definition anchored in Lewis's
+  parametric + non-parametric pairing, plus two boundaries (*not* fine-tuning, *not* just
+  search); (3) the **index → retrieve → augment → generate** pipeline with an offline/online
+  ASCII diagram and an honest name-reconciliation note; (4) the **Naive / Advanced /
+  Modular** maturity spectrum framed as the build→measure→improve arc. Worked example
+  traces L02's "cancel my plan" query through all four stages (what each fix buys;
+  retrieval-vs-generation failure split — seeds the later metric split).
+- **Verified Gao et al. survey wording at the primary** (research subagent fetched v5 full
+  text via arxiv.org/html): motivations, the retrieval/generation/augmentation framing,
+  Naive ("Retrieve-Read") + its drawbacks, Advanced (pre-/post-retrieval), Modular — all
+  quoted verbatim. **No registry change** (all three sources — Lewis, Gao survey, Lost in
+  the Middle — were already verified). Pinned the Gao citation to **v5 (27 Mar 2024)** and
+  flagged "Ongoing Work" as arXiv metadata, not paper prose.
+- Type `theory`, no `demo.py`. Deferred RAG-vs-FT/long-context/RAFT/CAG explicitly to L04
+  (no forward refs). Used Lost in the Middle [3] black-box to motivate post-retrieval
+  reordering. Validator green; user-reviewed.
+- **Left off at:** L03 done & user-approved; committed & pushed. **Next: L04
+  `architecture-and-model-strategy`** (`theory`, prereq L03).
