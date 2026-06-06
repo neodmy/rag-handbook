@@ -5,9 +5,12 @@ The ordered lesson plan for the handbook, derived from
 lessons (Phase 2 — see [`handbook-method.md`](./handbook-method.md)). This is the
 **teaching sequence**; the concept map is the concept graph it comes from.
 
-> **Status: APPROVED (2026-06-06).** No lessons are written yet. Phase 3 builds
-> them one at a time, starting next session with lesson 01 (deep per-lesson
-> research → write → run+verify code → self-review → user review).
+> **Status: APPROVED (re-approved 2026-06-06) — 39 lessons.** Originally approved at
+> 38 lessons (2026-06-06); re-approved after inserting lesson 17
+> `learned-sparse-retrieval` (SPLADE/COIL) right after hybrid+reranking and
+> renumbering the former 17–38 to 18–39. Phase 3 is underway: lessons **01–02 are
+> built**; the rest follow one at a time (deep per-lesson research → write →
+> run+verify code → self-review → user review).
 
 ## Design principle: baseline early, then eval-driven and progressive
 
@@ -63,93 +66,100 @@ instruments, correlation, the formal eval-driven loop) lands as a capstone (35).
 
 | # | Lesson | Type | Module | Covers | Prereq |
 |---|--------|------|--------|--------|--------|
-| 11 | `embeddings-and-model-selection` | theory+practice | M3 | Dense embeddings in practice; embedding-model selection & adaptation (briefly introduces MTEB — formal treatment in 21) | 02, 09 |
+| 11 | `embeddings-and-model-selection` | theory+practice | M3 | Dense embeddings in practice; embedding-model selection & adaptation (briefly introduces MTEB — formal treatment in 22) | 02, 09 |
 | 12 | `sparse-retrieval-bm25` | theory+practice | M3 | TF-IDF, Okapi BM25 | 02, 09 |
 | 13 | `dense-retrieval-dpr` | theory+practice | M3 | Dual-encoder / DPR retrieval | 11 |
 | 14 | `vector-indexes-and-ann` | theory+practice | M3 | HNSW, FAISS; recall vs throughput | 13 |
 | 15 | `vector-store-selection` | theory | M3 | Store taxonomy (native VDBMS / pgvector / search engines) and how to choose | 14 |
 | 16 | `hybrid-retrieval-and-reranking` | theory+practice | M3 | Lexical+semantic hybrid; cross-encoder / seq2seq reranking | 12, 13, 14 |
-| 17 | `parent-doc-and-metadata-filtering` | theory+practice | M3 | Parent-document / small-to-big; metadata filtering & index lifecycle | 14, 10 |
-| 18 | `vector-layer-engineering` | theory+practice | M3 | Quantization (PQ/int8/binary); Matryoshka/truncatable dims; ANN tuning & capacity planning | 14 |
-| 19 | `structured-data-and-text-to-sql` | theory+practice | M3 | Retrieval over relational/tabular data; text-to-SQL; schema linking | 14 |
+| 17 | `learned-sparse-retrieval` | theory+practice | M3 | Learned sparse retrieval (SPLADE): learned term weights + term expansion into a sparse vocabulary vector; inverted-index efficiency + semantic recall in one representation; vs BM25 / dense / hybrid; COIL as context | 12, 13, 16 |
+| 18 | `parent-doc-and-metadata-filtering` | theory+practice | M3 | Parent-document / small-to-big; metadata filtering & index lifecycle | 14, 10 |
+| 19 | `vector-layer-engineering` | theory+practice | M3 | Quantization (PQ/int8/binary); Matryoshka/truncatable dims; ANN tuning & capacity planning | 14 |
+| 20 | `structured-data-and-text-to-sql` | theory+practice | M3 | Retrieval over relational/tabular data; text-to-SQL; schema linking | 14 |
 
 ## Part IV — Retrieval: evaluate & improve (M6, M12 primer, M3 query understanding)
 
 | # | Lesson | Type | Module | Covers | Prereq |
 |---|--------|------|--------|--------|--------|
-| 20 | `retrieval-metrics` | theory+practice | M6 | Relevance & qrels (Cranfield/TREC); precision@k/recall@k; MRR/MAP; DCG/nDCG | 14, 06 |
-| 21 | `retrieval-benchmarks` | theory | M6 | BEIR, MTEB | 20 |
-| 22 | `interpreting-results` | theory+practice | M12 (primer) | Held-out discipline / don't tune on test; "is the delta real?" — significance (bootstrap/randomization) & statistical power / sample size, at working depth | 20 |
-| 23 | `query-transformation` | theory+practice | M3 | Query rewriting; HyDE; query expansion / relevance feedback | 16, 20, 22 |
-| 24 | `query-decomposition-routing-fusion` | theory+practice | M3 | Query decomposition (Self-Ask); routing / "retrieve or not"; fusion (RAG-Fusion + RRF); conversational contextualization | 23 |
+| 21 | `retrieval-metrics` | theory+practice | M6 | Relevance & qrels (Cranfield/TREC); precision@k/recall@k; MRR/MAP; DCG/nDCG | 14, 06 |
+| 22 | `retrieval-benchmarks` | theory | M6 | BEIR, MTEB | 21 |
+| 23 | `interpreting-results` | theory+practice | M12 (primer) | Held-out discipline / don't tune on test; "is the delta real?" — significance (bootstrap/randomization) & statistical power / sample size, at working depth | 21 |
+| 24 | `query-transformation` | theory+practice | M3 | Query rewriting; HyDE; query expansion / relevance feedback | 16, 21, 23 |
+| 25 | `query-decomposition-routing-fusion` | theory+practice | M3 | Query decomposition (Self-Ask); routing / "retrieve or not"; fusion (RAG-Fusion + RRF); conversational contextualization | 24 |
 
 ## Part V — Generation: build (M4)
 
 | # | Lesson | Type | Module | Covers | Prereq |
 |---|--------|------|--------|--------|--------|
-| 25 | `grounded-generation-and-prompt-design` | theory+practice | M4 | Generation conditioned on context; augmentation-prompt design (delimiters/XML, source tags, system prompt, quote-first) | 04, 14 |
-| 26 | `synthesis-curation-and-position` | theory+practice | M4 | Multi-chunk synthesis (stuff/refine/tree-summarize/accumulate); context curation; "lost in the middle" / ordering | 25 |
-| 27 | `faithfulness-abstention-and-citations` | theory+practice | M4 | Faithfulness/groundedness; hallucination types; generation-time abstention; citation/attribution generation | 25 |
-| 28 | `structured-output-and-streaming` | theory+practice | M4 | Structured/constrained output (JSON-schema vs JSON mode vs tool calling); response streaming | 25 |
-| 29 | `rag-security-prompt-injection` | theory | M4 | Indirect prompt injection (retrieved content is attacker-controlled); threat model & mitigations; OWASP LLM01 — cross-links production guardrails/ACL (37) | 25 |
+| 26 | `grounded-generation-and-prompt-design` | theory+practice | M4 | Generation conditioned on context; augmentation-prompt design (delimiters/XML, source tags, system prompt, quote-first) | 04, 14 |
+| 27 | `synthesis-curation-and-position` | theory+practice | M4 | Multi-chunk synthesis (stuff/refine/tree-summarize/accumulate); context curation; "lost in the middle" / ordering | 26 |
+| 28 | `faithfulness-abstention-and-citations` | theory+practice | M4 | Faithfulness/groundedness; hallucination types; generation-time abstention; citation/attribution generation | 26 |
+| 29 | `structured-output-and-streaming` | theory+practice | M4 | Structured/constrained output (JSON-schema vs JSON mode vs tool calling); response streaming | 26 |
+| 30 | `rag-security-prompt-injection` | theory | M4 | Indirect prompt injection (retrieved content is attacker-controlled); threat model & mitigations; OWASP LLM01 — cross-links production guardrails/ACL (38) | 26 |
 
 ## Part VI — Generation: evaluate (M7, M8, M9)
 
 | # | Lesson | Type | Module | Covers | Prereq |
 |---|--------|------|--------|--------|--------|
-| 30 | `classical-generation-metrics` | theory+practice | M7 | BLEU/ROUGE/METEOR; BERTScore; why overlap metrics fail; answer correctness vs ground truth | 25, 06, 22 |
-| 31 | `faithfulness-measurement` | theory+practice | M8 | NLI (FactCC/SummaC); FActScore; SelfCheckGPT; HHEM; TruthfulQA/RAGTruth; citation-quality eval | 27, 06 |
-| 32 | `llm-as-a-judge` | theory+practice | M9 | LLM-judge idea & validity; G-Eval recipe; judge biases; robustness (LLMBar); reproducibility | 30, 31 |
+| 31 | `classical-generation-metrics` | theory+practice | M7 | BLEU/ROUGE/METEOR; BERTScore; why overlap metrics fail; answer correctness vs ground truth | 26, 06, 23 |
+| 32 | `faithfulness-measurement` | theory+practice | M8 | NLI (FactCC/SummaC); FActScore; SelfCheckGPT; HHEM; TruthfulQA/RAGTruth; citation-quality eval | 28, 06 |
+| 33 | `llm-as-a-judge` | theory+practice | M9 | LLM-judge idea & validity; G-Eval recipe; judge biases; robustness (LLMBar); reproducibility | 31, 32 |
 
 ## Part VII — Whole-pipeline evaluation & methodology (M10, M11, M12)
 
 | # | Lesson | Type | Module | Covers | Prereq |
 |---|--------|------|--------|--------|--------|
-| 33 | `rag-metric-suites` | theory+practice | M10 | RAGAS (faithfulness, context precision/recall, answer relevancy, noise sensitivity); the RAG triad; ARES; DeepEval | 20, 25, 32 |
-| 34 | `datasets-and-synthetic-generation` | theory+practice | M11 | QA datasets; RAG benchmarks; synthetic test-set generation; **eval-methodology surveys / best practices**; golden-set building; contamination & held-out discipline | 20, 33 |
-| 35 | `measurement-validity-and-methodology` | theory+practice | M12 | Inter-annotator agreement (kappa/alpha); human-eval instruments (Likert/pairwise/BWS); metric↔human correlation; significance/power in depth; the formal eval-driven-development loop | 22, 32 |
+| 34 | `rag-metric-suites` | theory+practice | M10 | RAGAS (faithfulness, context precision/recall, answer relevancy, noise sensitivity); the RAG triad; ARES; DeepEval | 21, 26, 33 |
+| 35 | `datasets-and-synthetic-generation` | theory+practice | M11 | QA datasets; RAG benchmarks; synthetic test-set generation; **eval-methodology surveys / best practices**; golden-set building; contamination & held-out discipline | 21, 34 |
+| 36 | `measurement-validity-and-methodology` | theory+practice | M12 | Inter-annotator agreement (kappa/alpha); human-eval instruments (Likert/pairwise/BWS); metric↔human correlation; significance/power in depth; the formal eval-driven-development loop | 23, 33 |
 
 ## Part VIII — Production (M13)
 
 | # | Lesson | Type | Module | Covers | Prereq |
 |---|--------|------|--------|--------|--------|
-| 36 | `online-eval-and-observability` | theory+practice | M13 | Online vs offline; A/B & interleaving; observability/tracing (OTel/LangSmith/Phoenix/Langfuse); CI eval & drift; HITL; cost/latency | 33 |
-| 37 | `governance-and-safe-operation` | theory | M13 | Request-path reliability (timeouts/retries/fallbacks); security/ACL; guardrails; PII/governance/right-to-erasure; versioning & safe rollout; feedback loops; business vs technical metrics | 36 |
+| 37 | `online-eval-and-observability` | theory+practice | M13 | Online vs offline; A/B & interleaving; observability/tracing (OTel/LangSmith/Phoenix/Langfuse); CI eval & drift; HITL; cost/latency | 34 |
+| 38 | `governance-and-safe-operation` | theory | M13 | Request-path reliability (timeouts/retries/fallbacks); security/ACL; guardrails; PII/governance/right-to-erasure; versioning & safe rollout; feedback loops; business vs technical metrics | 37 |
 
 ## Part IX — Advanced RAG (M14)
 
 | # | Lesson | Type | Module | Covers | Prereq |
 |---|--------|------|--------|--------|--------|
-| 38 | `iterative-and-agentic-rag` | theory+practice | M14 | Multi-hop / iterative retrieval (IRCoT/FLARE/Iter-RetGen); self-correcting RAG (Self-RAG/CRAG); agentic RAG | 16, 25, 33 |
+| 39 | `iterative-and-agentic-rag` | theory+practice | M14 | Multi-hop / iterative retrieval (IRCoT/FLARE/Iter-RetGen); self-correcting RAG (Self-RAG/CRAG); agentic RAG | 16, 26, 34 |
 
 ---
 
 ## Sequencing notes & judgment calls
 
 1. **Eval-driven & progressive arc.** "Why evaluation is hard" at 06 (after a
-   runnable baseline at 05); retrieval eval (20–21) follows retrieval build
-   (11–19); generation eval (30–32) follows generation build (25–29); whole-pipeline
-   suites at 33.
-2. **Methodology taught when first needed.** The `interpreting-results` primer (22)
+   runnable baseline at 05); retrieval eval (21–22) follows retrieval build
+   (11–20); generation eval (31–33) follows generation build (26–30); whole-pipeline
+   suites at 34.
+2. **Methodology taught when first needed.** The `interpreting-results` primer (23)
    — held-out discipline + "is the delta real?" — sits right before the first
-   improvement (23), so every "X improved Y" claim from then on is made with the
-   right hygiene. The deep measurement-validity methodology is the capstone (35),
-   which builds on 22.
+   improvement (24), so every "X improved Y" claim from then on is made with the
+   right hygiene. The deep measurement-validity methodology is the capstone (36),
+   which builds on 23.
 3. **Quickstart (05).** Runnable naive RAG via a framework — "see it work, then
    dissect." Integrative (realizes the M1 pipeline across M2–M4 at toy depth); also
    where the orchestration-framework layer is named.
-4. **Query understanding (23–24) after retrieval eval (20–22).** Honors the
+4. **Query understanding (24–25) after retrieval eval (21–23).** Honors the
    concept-map note (tuned/evaluated with retrieval metrics). Module M3 is therefore
-   non-contiguous (11–19 build, 23–24 improve) — by design.
-5. **Security split (29).** Indirect prompt injection is OWASP LLM01 and uniquely
+   non-contiguous (11–20 build, 24–25 improve) — by design.
+5. **Security split (30).** Indirect prompt injection is OWASP LLM01 and uniquely
    acute in RAG (retrieved content is untrusted input), so it is its own build-time
    lesson rather than a tail on output mechanics; it cross-links the production
-   guardrails/ACL lesson (37).
-6. **Cheap audit fixes applied:** MTEB introduced in 11 (formal treatment 21);
-   "what fine-tuning is" framed in 04; eval-methodology surveys named in 34; RAGAS
-   (33) lists generation (25) as a prereq.
-7. **Production (36/37).** Kept to two lessons; request-path **reliability** moved
-   from observability (36) into safe-operation (37), where it belongs.
+   guardrails/ACL lesson (38).
+6. **Cheap audit fixes applied:** MTEB introduced in 11 (formal treatment 22);
+   "what fine-tuning is" framed in 04; eval-methodology surveys named in 35; RAGAS
+   (34) lists generation (26) as a prereq.
+7. **Production (37/38).** Kept to two lessons; request-path **reliability** moved
+   from observability (37) into safe-operation (38), where it belongs.
+8. **Learned sparse retrieval (17), after hybrid (16).** Placed as the "resolve the
+   sparse↔dense trade-off in a *single* learned representation" beat: it needs both
+   base paradigms (sparse 12, dense 13) and the naive resolution (hybrid 16) for its
+   "best of both — one inverted index, learned to be semantic" framing to land. It
+   keeps the tight dense→ANN flow (13→14) intact and sits among the M3 build
+   refinements. Backed by `[§3: SPLADE]` (SIGIR 2021) with `[§3: COIL]` as context.
 
 ## No-forward-reference check
 
@@ -159,12 +169,12 @@ dependency graph, and respects the concept-map module edges: ingestion (M2) →
 retrieval (M3) → retrieval eval (M6) → query understanding (M3); generation (M4) →
 generation/faithfulness eval (M7/M8) → judge (M9) → suites (M10) →
 datasets/methodology (M11/M12) → production (M13); advanced (M14) last. The M12
-"interpreting-results" primer (22) is a deliberate early slice of statistical
+"interpreting-results" primer (23) is a deliberate early slice of statistical
 methodology placed at the first system comparison.
 
 ## Coverage check
 
 Every concept-map module M0–M14 is represented by ≥1 lesson:
-M0→01–02 · M1→03–05 · M2→07–10 · M3→11–19, 23–24 · M4→25–29 · M5→06 · M6→20–21 ·
-M7→30 · M8→31 · M9→32 · M10→33 · M11→34 · M12→22, 35 · M13→36–37 · M14→38.
+M0→01–02 · M1→03–05 · M2→07–10 · M3→11–20, 24–25 · M4→26–30 · M5→06 · M6→21–22 ·
+M7→31 · M8→32 · M9→33 · M10→34 · M11→35 · M12→23, 36 · M13→37–38 · M14→39.
 Lesson 05 is an extra integrative baseline (no new concept; realizes the pipeline).

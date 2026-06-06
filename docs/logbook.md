@@ -57,7 +57,7 @@ Phased build:
 | `docs/handbook-method.md` | The pedagogical method + lesson anatomy + registry rules. | Reframed to build+evaluate. |
 | `docs/sources.md` | Verified source registry (§1–§14). Lessons cite only from here. | ~93 sources, all verified. "To verify" section empty. §14 (build engineering) added 2026-06-06. §12 gained Mikolov et al. NAACL 2013 (*Linguistic Regularities*) for L02; word2vec entry re-scoped (it does not originate the king/queen analogy). |
 | `docs/concept-map.md` | Concept universe + module dependency graph (M0–M14), each concept tagged to a source. | Expanded; build+evaluate scope. Build-side audit (2026-06-06) added architecture/generation-craft/vector-layer/text-to-SQL/reliability; M13 distributed to stages; ingestion+retrieval split into M2/M3. All tag refs resolve to the registry. |
-| `docs/syllabus.md` | Phase-2 artifact: the ordered lesson plan (38 lessons) derived from the concept map. | **APPROVED (2026-06-06)** — eval-driven progressive arc; no-forward-ref check passes; committed. Phase 3 builds lessons from here, starting with L01. |
+| `docs/syllabus.md` | Phase-2 artifact: the ordered lesson plan derived from the concept map. | **APPROVED — 39 lessons (re-approved 2026-06-06).** Was 38; inserted L17 `learned-sparse-retrieval` (SPLADE/COIL) after hybrid (L16); renumbered former 17–38 → 18–39; prereqs remapped; no-forward-ref re-checked (executed, passes). Phase 3 builds from here (L01–L02 done). |
 | `.claude/skills/authoring-lessons/` | Skill to author lessons (SKILL.md + lesson-template.md + tested `scripts/validate_lesson.py`). | Working; validator tested. |
 | `lessons/` | One folder per lesson (built in Phase 3). | **L01 `01-llms-tokens-and-prompting` DONE** and **L02 `02-embeddings-and-search` DONE** (both theory; validator green; user-reviewed). Plus `README.md` conventions. |
 | `ragas_lab/` | Shared importable infra: `config.py` (pydantic-settings), `clients.py` (RAGAS judge LLM + embeddings via Ollama). | Working; `uv run pytest` green. |
@@ -340,3 +340,28 @@ authoring skill/template is **done** — all now framed as "build + evaluate".)
   abstract backs the sparse-vs-dense contrast).
 - **Left off at:** L02 done & user-approved; committed & pushed. **Next: L03
   `why-rag-and-what-it-is`** (`theory`, prereqs L01, L02).
+
+### 2026-06-06 — Syllabus revision: add learned sparse retrieval (L17)
+- After the L02 push, took up the parked question of whether to add **learned sparse
+  retrieval** (SPLADE/COIL). **User chose** "new dedicated lesson right after L16
+  hybrid" (over "after L13" or "fold into L16").
+- **Verified SPLADE at the primary** (subagent, arXiv abstracts): v1 (Formal,
+  Piwowarski, Clinchant; **SIGIR 2021**, high) — sparse lexical term-weight vectors
+  that "inherit … the exact matching of terms and the efficiency of inverted
+  indexes," sparsity via regularization + log-saturation, "competitive … with
+  state-of-the-art dense and sparse methods"; v2 (arXiv, medium) — ">9% NDCG@10 on
+  TREC DL 2019, SOTA on BEIR." COIL already in §3 (NAACL 2021) as supporting context.
+  Caveat: WordPiece-vocab / FLOPS-reg / explicit vocabulary-mismatch framing are in
+  the paper body, not the abstract — cite body sections when building the lesson.
+- **Edits:** `sources.md` §3 — added SPLADE v1 (high) + v2 (medium), extended the
+  COIL note. `concept-map.md` M3 — added a **Learned sparse retrieval** node
+  (`[§3: SPLADE]` `[§3: COIL]`) in the matching-methods cluster after hybrid.
+  `syllabus.md` — inserted **L17 `learned-sparse-retrieval`** (theory+practice, M3,
+  prereqs 12/13/16); renumbered 17–38 → 18–39; remapped every downstream prereq;
+  updated sequencing notes (new note 8 explains the placement), the no-forward-ref
+  note, and the coverage check (M3→11–20, 24–25). Now **39 lessons**.
+- **Re-checked no forward references with an executed script** (parse tables → assert
+  prereq < lesson, contiguous 1–39, no dupes, no dangling): **passes**.
+- **Re-approved by the user (2026-06-06)**; committed & pushed.
+- **Left off at:** syllabus at 39 lessons, approved & committed. Build order
+  unchanged — **next build is still L03** `why-rag-and-what-it-is`.

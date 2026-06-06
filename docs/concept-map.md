@@ -97,6 +97,7 @@ For readers with no LLM background. Black-box depth: enough to build and evaluat
 - **Vector indexes / ANN**: HNSW, FAISS; comparing implementations (recall vs throughput). `[§3: HNSW]` `[§3: FAISS]` `[§3: ANN-Benchmarks]`
 - **Vector store landscape & selection**: the store taxonomy — *native* vector DBs (Milvus, Qdrant, Weaviate, Chroma), *extended* SQL systems (pgvector on Postgres), and *search engines & libraries* (Elasticsearch/OpenSearch, Lucene, FAISS) — and how to choose (hybrid queries, scale, ops, embedded vs server). `[§3: Vector DBMS survey]` (per-store capabilities → each store's official docs)
 - **Hybrid retrieval**: combining lexical + semantic. `[§3: Hybrid]` `[§3: COIL]`
+- **Learned sparse retrieval**: learn term weights + term expansion into a *sparse* vocabulary vector (SPLADE) — keep inverted-index efficiency and exact-term matching while gaining semantic recall; a single-representation alternative to running two systems and fusing them. `[§3: SPLADE]` `[§3: COIL]`
 - **Reranking**: cross-encoder / seq2seq rerankers. `[§3: monoBERT]` `[§3: monoT5]`
 - **Parent-document / small-to-big**: retrieve small, return larger context. `[§3: Parent-document]`
 - **Metadata filtering & index lifecycle**: filter ANN by metadata (tenant, recency, doc-type); incremental upsert/delete/re-embed (freshness). `[§3: pgvector]`

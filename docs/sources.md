@@ -100,7 +100,11 @@ added §14 + entries to §1/§3; all fetched at the primary this session).
 - **[Leveraging Semantic and Lexical Matching to Improve Recall — A Hybrid Approach](https://arxiv.org/abs/2010.01195)**
   — Kuzi, et al. arXiv:2010.01195, 2020. **medium** (preprint). Backs: hybrid (sparse+dense) retrieval.
 - **[COIL: Revisit Exact Lexical Match in IR with Contextualized Inverted List](https://arxiv.org/abs/2104.07186)**
-  — Gao, Dai, Callan. NAACL 2021. **high**. Backs: contextualized lexical + dense bridge.
+  — Gao, Dai, Callan. NAACL 2021. **high**. Backs: contextualized lexical + dense bridge — "contextualized exact match retrieval … brings semantic lexical matching", storing token representations in inverted lists. Supporting context for the learned-sparse family (not term-expansion).
+- **[SPLADE: Sparse Lexical and Expansion Model for First Stage Ranking](https://arxiv.org/abs/2107.05720)**
+  — Formal, Piwowarski, Clinchant. SIGIR 2021. **high**. Backs: **learned sparse retrieval** — learned sparse term-weight representations over the vocabulary that "inherit … the exact matching of terms and the efficiency of inverted indexes," via explicit sparsity regularization + a log-saturation effect on term weights; "competitive results with respect to state-of-the-art dense and sparse methods." *Verified at arXiv abstract 2026-06-06; the WordPiece-vocabulary, FLOPS-regularization, and explicit vocabulary-mismatch framing are in the paper body, not the abstract — cite body sections for those.*
+- **[SPLADE v2: Sparse Lexical and Expansion Model for Information Retrieval](https://arxiv.org/abs/2109.10086)**
+  — Formal, Lassance, Piwowarski, Clinchant. arXiv:2109.10086, 2021. **medium** (preprint follow-up to the SIGIR paper). Backs: improved pooling + document expansion + distillation; headline result ">9% NDCG@10 gains on TREC DL 2019, leading to state-of-the-art results on the BEIR benchmark." *Verified at arXiv abstract 2026-06-06.*
 - **[Dense X Retrieval: What Retrieval Granularity Should We Use?](https://arxiv.org/abs/2312.06648)**
   — Chen, Wang, Chen, Yu, et al. EMNLP 2024. **high**. Backs: chunking / retrieval-unit granularity (incl. propositions).
 - **Parent-document / small-to-big retrieval** (engineering pattern — retrieve small chunks, return their larger parent/merged context). Official framework docs:
