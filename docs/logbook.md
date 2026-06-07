@@ -59,7 +59,7 @@ Phased build:
 | `docs/concept-map.md` | Concept universe + module dependency graph (M0–M14), each concept tagged to a source. | Expanded; build+evaluate scope. Build-side audit (2026-06-06) added architecture/generation-craft/vector-layer/text-to-SQL/reliability; M13 distributed to stages; ingestion+retrieval split into M2/M3. All tag refs resolve to the registry. |
 | `docs/syllabus.md` | Phase-2 artifact: the ordered lesson plan derived from the concept map. | **APPROVED — 39 lessons (re-approved 2026-06-06).** Was 38; inserted L17 `learned-sparse-retrieval` (SPLADE/COIL) after hybrid (L16); renumbered former 17–38 → 18–39; prereqs remapped; no-forward-ref re-checked (executed, passes). Phase 3 builds from here (L01–L02 done). |
 | `.claude/skills/authoring-lessons/` | Skill to author lessons (SKILL.md + lesson-template.md + tested `scripts/validate_lesson.py`). | Working; validator tested. |
-| `lessons/` | One folder per lesson (built in Phase 3). | **L01–L05 DONE** (`01-llms-tokens-and-prompting`, `02-embeddings-and-search`, `03-why-rag-and-what-it-is`, `04-architecture-and-model-strategy` — all theory; **`05-minimal-end-to-end-rag` — first `theory+practice`, runnable `demo.py`**; validator green; user-reviewed). Plus `README.md` conventions + built-lessons index. |
+| `lessons/` | One folder per lesson (built in Phase 3). | **L01–L06 DONE** (`01-llms-tokens-and-prompting`, `02-embeddings-and-search`, `03-why-rag-and-what-it-is`, `04-architecture-and-model-strategy` — all theory; **`05-minimal-end-to-end-rag` — first `theory+practice`, runnable `demo.py`**; **`06-why-evaluation-is-hard` — theory, the pivot into evaluation**; validator green; user-reviewed). Plus `README.md` conventions + built-lessons index. |
 | `ragas_lab/` | Shared importable infra: `config.py` (pydantic-settings), `clients.py` (RAGAS judge LLM + embeddings via Ollama). | Working; `uv run pytest` green. |
 | `tests/` | Smoke tests for the scaffolding. | 2 passing. |
 
@@ -189,13 +189,37 @@ runnable code; see the Session log entry below for full detail). It wires a naiv
 **LangChain + a local Ollama model**, runs, and pastes real output; it is the baseline the rest of the
 handbook measures/improves.
 
-**Next session: build L06 `why-evaluation-is-hard`** (type **`theory`**, prereq L05) via the
-`authoring-lessons` skill. It is the pivot into the evaluation arc: eval targets (retrieval vs
-generation), reference-based vs reference-free, offline vs online, error attribution & the recall
-ceiling, eval design/ablation, abstention & robustness as targets. This is also where the **first real
-evaluation dataset** (with ground truth, in `datasets/`) should be built — see the backlog note. Build
-lessons strictly in syllabus order; each lesson's `## Prerequisites` are the lower-numbered lessons in
-its syllabus row; per skill step 7, add L06's row to the `lessons/README.md` index.
+**L06 `why-evaluation-is-hard` is DONE** (type `theory`, prereq L05) — the pivot from *building* into
+the evaluation arc. Teaches the *shape* of RAG evaluation (no metric taught yet): (1) two evaluation
+**targets** — retrieval vs generation, separable failure modes [RAGAS; Eval-of-RAG survey]; (2) the
+**error-attribution** problem + the **retrieval recall ceiling** (generation is capped by what retrieval
+surfaced — taught as a *synthesis*, not a quote); (3) **reference-based vs reference-free** [RAGAS]; (4)
+**offline vs online** [Hofmann]; (5) abilities beyond correctness — **negative rejection/abstention** and
+**noise/counterfactual robustness** [RGB]; (6) **baselines + one-component ablation** [Searching for Best
+Practices]. Worked example reuses L05's Acme-Cloud help-desk (one wrong "5 GB" answer attributed to either
+engine). **No registry change** — all six claim-clusters were already covered by verified §8/§9/§10 entries;
+a verification subagent re-fetched the exact quotable wording at each primary before writing. In-lesson
+honesty flags: recall ceiling = synthesis (survey "interplay" + RGB negative-rejection), not a quote;
+Hofmann's "A/B/interleaving" naming attributed to general IR practice (body paywalled) and IR-general not
+RAG-specific; "reference-free" scoped to RAGAS's *original three* metrics not the whole library; Eval-of-RAG
+survey presented as one proposed framework (preprint, medium); Best-Practices numbers + RGB rejection-rates
+flagged as setup-specific. Validator green; index row added; user-reviewed (confirmed the forward-promise to
+online-eval/observability/feedback-loops is backed by syllabus L37–L38; left the L06 reference deliberately
+vague to survive renumbering).
+
+**Decision (2026-06-07):** the "build the first real eval dataset *in L06*" plan was **dropped** —
+L06 is theory and the dataset isn't *used* until L21 (`retrieval-metrics`). The serious golden dataset
+moves to its own design session **near L21** (see the updated backlog note below).
+
+**Next session: build L07 `document-loading-and-parsing`** (type **`theory+practice`**, prereq L05) via the
+`authoring-lessons` skill — the start of **Part II (Ingestion, M2)**: loading/parsing PDF/HTML/scanned files,
+layout-aware extraction (reading order, structure), and tables. Per skill step 5 the practice arm must **run**
+(`uv run python -m lessons.07-document-loading-and-parsing.demo`) with **real output pasted**; verify framework
+APIs via Context7 first. Candidate §13 sources already in the registry (Unstructured, LayoutLMv3, PubTables-1M)
+— do deep per-lesson research and verify any new claim at the primary. Build strictly in syllabus order; each
+lesson's `## Prerequisites` = the lower-numbered lessons in its syllabus row; per skill step 7, add L07's row to
+the `lessons/README.md` index. (Note: L07's only syllabus prereq is **05** — ingestion branches off the baseline,
+not off L06.)
 
 (Scope alignment across `CLAUDE.md`, `README.md`, `handbook-method.md`, and the
 authoring skill/template is **done** — all now framed as "build + evaluate".)
@@ -207,10 +231,14 @@ authoring skill/template is **done** — all now framed as "build + evaluate".)
   caching, judge calibration, safety/toxicity eval, multi-turn/conversational eval.
 - Consider recording in `handbook-method.md` the rule "coverage audits bias toward
   flagging" (lesson from this session).
-- **Build a serious evaluation dataset for L06+** (user decision, 2026-06-07). L05's
-  `data/` is a throwaway toy corpus *for L05 only*; from L06 on we need a real dataset
-  with ground truth, living in `datasets/` under the RAGAS field contract
-  (`user_input` / `response` / `retrieved_contexts` / `reference`).
+- **Build a serious evaluation dataset — now scheduled near L21** (user decision,
+  2026-06-07; *re-scoped 2026-06-07*). Originally slated for L06, but L06 shipped as
+  pure theory and the dataset isn't *used* until **L21 `retrieval-metrics`** (the first
+  lesson that actually measures). So the serious golden set gets its own design session
+  near L21 — decide corpus/domain/size/ground-truth-authoring up front. It lives in
+  `datasets/` under the RAGAS field contract (`user_input` / `response` /
+  `retrieved_contexts` / `reference`). L05's `data/` remains a throwaway toy corpus
+  *for L05 only*.
 - **Latent: RAGAS judge model default is `mistral`, not present on the Ollama host**
   (`ragas_lab/config.py` `ollama_judge_model`). Irrelevant to L05 (no eval yet), but
   must be pinned to a real host model before the L06+ evaluation lessons run RAGAS.
@@ -505,3 +533,37 @@ authoring skill/template is **done** — all now framed as "build + evaluate".)
   model (default `mistral` absent on host) before L06+ eval runs.
 - **Left off at:** L05 done & user-approved; committing & pushing this session. **Next: L06
   `why-evaluation-is-hard`** (`theory`, prereq L05) — the pivot into evaluation; build the first real dataset there.
+
+### 2026-06-07 — Phase 3: L06 built (pivot into evaluation)
+- Built **L06 `lessons/06-why-evaluation-is-hard/README.md`** (type `theory`, prereq L05) via the
+  `authoring-lessons` skill — the pivot from *building* to *measuring*. Deliberately teaches **no metric**;
+  it teaches the *shape* of RAG evaluation in six ideas: (1) two **targets** — retrieval vs generation,
+  separable failure modes; (2) the **error-attribution** problem + the **retrieval recall ceiling**
+  (generation capped by retrieval); (3) **reference-based vs reference-free**; (4) **offline vs online**;
+  (5) abilities beyond correctness — **negative rejection/abstention**, **noise/counterfactual robustness**;
+  (6) **baselines + one-component ablation**. Worked example reuses L05's Acme-Cloud help-desk: one wrong
+  "5 GB" answer traced to *either* engine depending on what was retrieved, then framed as an ablation.
+- **Verification first (subagent), every claim re-fetched at the primary** before writing — RAGAS
+  (arXiv:2309.15217, EACL'24 demo), Eval-of-RAG survey (2405.07437), RGB (2309.01431, AAAI'24),
+  Searching for Best Practices (2407.01219, EMNLP'24), and Hofmann/Li/Radlinski 2016 (FnT IR; abstract
+  verified, body paywalled). **No registry change** — all five were already verified §8/§9/§10 entries.
+- **In-lesson honesty flags** (per the verification report): the **recall ceiling** is taught as a
+  *synthesis* of the survey's "interplay between retrieval accuracy and generative quality" + RGB's
+  negative-rejection construction — **not** a verbatim claim from any source; Hofmann's **"A/B testing /
+  interleaving"** naming attributed to general IR practice (only "controlled experiments / absolute vs
+  relative quality" is verbatim; body paywalled) and flagged IR-general, pre-RAG; **"reference-free"**
+  scoped to RAGAS's *original three* metrics, not the whole pinned library; the **Eval-of-RAG survey**
+  presented as one proposed framework (non-peer-reviewed preprint, medium); **Best-Practices scores** and
+  **RGB rejection-rates** flagged as setup-specific (teach method + qualitative findings, not the numbers).
+- **User review:** confirmed (against the syllabus, not memory) that L06's forward-promise — online
+  evaluation / observability / and the *feedback-loop / data-flywheel* that mines user interactions back into
+  the system — is genuinely backed by **L37 `online-eval-and-observability`** and **L38
+  `governance-and-safe-operation`** (Part VIII, M13). On user instruction the L06 reference was left
+  **deliberately vague** ("late in the course") to survive future renumbering. Validator green; lint clean;
+  `lessons/README.md` index row added.
+- **Decision:** dropped the "build the eval dataset in L06" plan — L06 is theory and the dataset isn't used
+  until **L21**. The serious golden set moves to its own design session near L21 (backlog note re-scoped).
+- **Left off at:** L06 done & user-approved; committing & pushing this session. **Next: L07
+  `document-loading-and-parsing`** (`theory+practice`, prereq **05** — ingestion branches off the baseline,
+  not L06) — start of Part II (Ingestion, M2). Practice arm must run with real output; verify framework APIs
+  via Context7; §13 sources (Unstructured/LayoutLMv3/PubTables-1M) already in the registry.
