@@ -1,0 +1,13 @@
+Cancelling your Acme Cloud subscription
+
+You can cancel your Acme Cloud plan at any time from Settings > Billing > Cancel
+plan. Cancellation takes effect at the end of the current billing period, so you
+keep access to all paid features until that date. We do not cancel mid-cycle.
+
+When you cancel an annual plan, you remain on the paid tier until the annual term
+ends; we do not pro-rate the remaining months automatically. If you cancel a
+monthly plan, you keep access until the end of the current month.
+
+After cancellation your account is downgraded to the Free tier. Your data is kept
+for 30 days so you can reactivate without losing anything; after 30 days, projects
+above the Free-tier limit are archived and then deleted.

@@ -1,0 +1,13 @@
+Exporting your data
+
+You can export your Acme Cloud data at any time from Settings > Data > Export. We
+generate a downloadable archive containing your projects as JSON plus any uploaded
+files. Large exports are prepared in the background and we email you a link when the
+archive is ready.
+
+The download link is valid for 24 hours. Exports include your own data only; they
+do not include data from workspaces owned by other accounts, even if you have access
+to them.
+
+There is no limit on how often you can export. Exporting does not change or delete
+anything in your account.

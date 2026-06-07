@@ -1,0 +1,13 @@
+Plans and tiers
+
+Acme Cloud has three tiers. The Free tier includes up to 3 projects and community
+support. The Pro tier adds unlimited projects, email support, and daily backups.
+The Team tier adds shared workspaces, role-based access control, and a 99.9% uptime
+service-level agreement.
+
+You can upgrade or downgrade at any time from Settings > Billing. Upgrades take
+effect immediately and are billed pro-rata for the rest of the current period.
+Downgrades take effect at the start of the next billing period.
+
+Pro and Team are billed either monthly or annually; annual billing is discounted
+compared to paying month by month.

@@ -332,6 +332,12 @@ authoritative for the tool's own behavior; pair vendor prescriptive guidance wit
 - **[Anthropic — Streaming Messages](https://docs.anthropic.com/en/api/messages-streaming)**
   — Anthropic. Official API docs. **high** (authoritative for the protocol).
   Backs: response streaming to the user (the SSE event sequence) — a serving/build primitive that drives time-to-first-token. *Verified 2026-06-06.*
+- **[LangChain — Build a Retrieval Augmented Generation (RAG) App](https://python.langchain.com/docs/tutorials/rag/)**
+  — LangChain. Official framework docs/tutorial. **high** (authoritative for the framework's own API/wiring).
+  Backs: the orchestration-framework layer and the end-to-end wiring of a minimal RAG pipeline — `RecursiveCharacterTextSplitter`, `InMemoryVectorStore`, top-k retrieval via `as_retriever`, and LCEL composition (`prompt | llm | parser`). *Page live (HTTP 200) 2026-06-07; API behavior additionally verified by running it against langchain 0.3.x + langchain-ollama 0.3.10 this session.*
+- **[LangChain — ChatOllama](https://python.langchain.com/docs/integrations/chat/ollama/)** & **[OllamaEmbeddings](https://python.langchain.com/docs/integrations/text_embedding/ollama/)**
+  — LangChain. Official integration docs. **high** (authoritative for the integration's API).
+  Backs: using a local Ollama-served chat model (`ChatOllama`) and embedding model (`OllamaEmbeddings`) as the generator and indexer in a LangChain pipeline. *Pages live (HTTP 200) 2026-06-07; API behavior verified by execution this session.*
 
 ## To verify before citing
 

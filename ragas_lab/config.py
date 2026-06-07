@@ -6,6 +6,7 @@ the judge model and its endpoint are part of the *result*, not an
 implementation detail. Pin them, and your scores are reproducible.
 """
 
+from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -16,6 +17,14 @@ class Settings(BaseSettings):
 
     # Ollama exposes an OpenAI-compatible API at ``${ollama_base_url}/v1``.
     ollama_base_url: str = "http://localhost:11434"
+    # The generation (chat) model used by application code, e.g. a RAG pipeline's
+    # generator. Reads OLLAMA_CHAT_MODEL, or the legacy OLLAMA_MODEL as a fallback.
+    ollama_chat_model: str = Field(
+        default="qwen3:14b",
+        validation_alias=AliasChoices("ollama_chat_model", "ollama_model"),
+    )
+    # The evaluator ("judge") model used by RAGAS metrics — separate on purpose:
+    # the system under test and the system that grades it should be pinned apart.
     ollama_judge_model: str = "mistral"
     ollama_embed_model: str = "nomic-embed-text"
 

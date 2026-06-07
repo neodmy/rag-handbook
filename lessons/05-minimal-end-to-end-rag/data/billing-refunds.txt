@@ -1,0 +1,12 @@
+Refund policy
+
+Acme Cloud offers a refund only within 14 days of the original purchase or of a
+renewal charge. To request one, contact support@acme.example within that window
+and we will refund the most recent payment to the original payment method.
+
+Outside the 14-day window we do not issue refunds for the current period. When you
+cancel, you are not charged again, but the payment for the period you are already
+in is not returned. Refunds are not pro-rated for unused time within a period.
+
+Refunds typically take 5 to 10 business days to appear on your statement, depending
+on your bank or card issuer.

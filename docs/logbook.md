@@ -55,11 +55,11 @@ Phased build:
 |------|-----------|--------|
 | `CLAUDE.md` | Working principles (evidence rules, language, lesson conventions). Read first. | Reframed to build+evaluate; points to this logbook. |
 | `docs/handbook-method.md` | The pedagogical method + lesson anatomy + registry rules. | Reframed to build+evaluate. |
-| `docs/sources.md` | Verified source registry (§1–§14). Lessons cite only from here. | ~93 sources, all verified. "To verify" section empty. §14 (build engineering) added 2026-06-06. §12 gained Mikolov et al. NAACL 2013 (*Linguistic Regularities*) for L02; word2vec entry re-scoped (it does not originate the king/queen analogy). L04 used existing §1 entries (no new sources); fixed RAG-vs-LC affiliation Google → **Google DeepMind**. |
+| `docs/sources.md` | Verified source registry (§1–§14). Lessons cite only from here. | ~93 sources, all verified. "To verify" section empty. §14 (build engineering) added 2026-06-06. §12 gained Mikolov et al. NAACL 2013 (*Linguistic Regularities*) for L02; word2vec entry re-scoped (it does not originate the king/queen analogy). L04 used existing §1 entries (no new sources); fixed RAG-vs-LC affiliation Google → **Google DeepMind**. L05 added two §14 framework-doc entries (LangChain RAG tutorial; LangChain ChatOllama/OllamaEmbeddings integration pages) — pages live (HTTP 200) + API verified by execution. |
 | `docs/concept-map.md` | Concept universe + module dependency graph (M0–M14), each concept tagged to a source. | Expanded; build+evaluate scope. Build-side audit (2026-06-06) added architecture/generation-craft/vector-layer/text-to-SQL/reliability; M13 distributed to stages; ingestion+retrieval split into M2/M3. All tag refs resolve to the registry. |
 | `docs/syllabus.md` | Phase-2 artifact: the ordered lesson plan derived from the concept map. | **APPROVED — 39 lessons (re-approved 2026-06-06).** Was 38; inserted L17 `learned-sparse-retrieval` (SPLADE/COIL) after hybrid (L16); renumbered former 17–38 → 18–39; prereqs remapped; no-forward-ref re-checked (executed, passes). Phase 3 builds from here (L01–L02 done). |
 | `.claude/skills/authoring-lessons/` | Skill to author lessons (SKILL.md + lesson-template.md + tested `scripts/validate_lesson.py`). | Working; validator tested. |
-| `lessons/` | One folder per lesson (built in Phase 3). | **L01–L04 DONE** (`01-llms-tokens-and-prompting`, `02-embeddings-and-search`, `03-why-rag-and-what-it-is`, `04-architecture-and-model-strategy` — all theory; validator green; user-reviewed). Plus `README.md` conventions + built-lessons index. |
+| `lessons/` | One folder per lesson (built in Phase 3). | **L01–L05 DONE** (`01-llms-tokens-and-prompting`, `02-embeddings-and-search`, `03-why-rag-and-what-it-is`, `04-architecture-and-model-strategy` — all theory; **`05-minimal-end-to-end-rag` — first `theory+practice`, runnable `demo.py`**; validator green; user-reviewed). Plus `README.md` conventions + built-lessons index. |
 | `ragas_lab/` | Shared importable infra: `config.py` (pydantic-settings), `clients.py` (RAGAS judge LLM + embeddings via Ollama). | Working; `uv run pytest` green. |
 | `tests/` | Smoke tests for the scaffolding. | 2 passing. |
 
@@ -184,14 +184,18 @@ statuses; Ovadia scoped to *unsupervised* FT; CAG's KV-cache detail is body-not-
 quoted verbatim); "FT for behavior" marked as engineering consensus, not a measured claim. Fixed
 the RAG-vs-LC affiliation in the registry (Google → Google DeepMind). Validator green; user-reviewed.
 
-**Next session: build L05 `minimal-end-to-end-rag`** (type **`theory+practice`** — the first lesson
-with runnable code; prereq L04) via the `authoring-lessons` skill, same per-lesson mini-loop, but
-now with the practice arm: wire a runnable naive RAG end-to-end (load → chunk → embed → retrieve →
-generate) with an orchestration framework, **run it** with `uv run python -m lessons.05-minimal-end-to-end-rag.demo`
-and paste the **real** output. This introduces the orchestration-framework layer and is the baseline
-the rest of the handbook measures/improves. Verify framework APIs via Context7 before writing code.
-Build lessons strictly in syllabus order; each lesson's `## Prerequisites` are the lower-numbered
-lessons listed in its syllabus row; per skill step 7, add L05's row to the `lessons/README.md` index.
+**L05 `minimal-end-to-end-rag` is DONE** (type `theory+practice`, prereq L04 — the first lesson with
+runnable code; see the Session log entry below for full detail). It wires a naive RAG end-to-end with
+**LangChain + a local Ollama model**, runs, and pastes real output; it is the baseline the rest of the
+handbook measures/improves.
+
+**Next session: build L06 `why-evaluation-is-hard`** (type **`theory`**, prereq L05) via the
+`authoring-lessons` skill. It is the pivot into the evaluation arc: eval targets (retrieval vs
+generation), reference-based vs reference-free, offline vs online, error attribution & the recall
+ceiling, eval design/ablation, abstention & robustness as targets. This is also where the **first real
+evaluation dataset** (with ground truth, in `datasets/`) should be built — see the backlog note. Build
+lessons strictly in syllabus order; each lesson's `## Prerequisites` are the lower-numbered lessons in
+its syllabus row; per skill step 7, add L06's row to the `lessons/README.md` index.
 
 (Scope alignment across `CLAUDE.md`, `README.md`, `handbook-method.md`, and the
 authoring skill/template is **done** — all now framed as "build + evaluate".)
@@ -203,6 +207,13 @@ authoring skill/template is **done** — all now framed as "build + evaluate".)
   caching, judge calibration, safety/toxicity eval, multi-turn/conversational eval.
 - Consider recording in `handbook-method.md` the rule "coverage audits bias toward
   flagging" (lesson from this session).
+- **Build a serious evaluation dataset for L06+** (user decision, 2026-06-07). L05's
+  `data/` is a throwaway toy corpus *for L05 only*; from L06 on we need a real dataset
+  with ground truth, living in `datasets/` under the RAGAS field contract
+  (`user_input` / `response` / `retrieved_contexts` / `reference`).
+- **Latent: RAGAS judge model default is `mistral`, not present on the Ollama host**
+  (`ragas_lab/config.py` `ollama_judge_model`). Irrelevant to L05 (no eval yet), but
+  must be pinned to a real host model before the L06+ evaluation lessons run RAGAS.
 - Syllabus approved & committed; **Phase 3 (build lessons) starts next session at
   L01**. Lesson code/data live in `lessons/NN-slug/`; reusable infra in `ragas_lab/`.
 
@@ -460,3 +471,37 @@ authoring skill/template is **done** — all now framed as "build + evaluate".)
   (`theory+practice` — first lesson with runnable code; prereq L04). Per skill step 5, the practice
   arm must run (`uv run python -m lessons.05-minimal-end-to-end-rag.demo`) with real output pasted;
   verify framework APIs via Context7 first. Per step 7, add L05's row to the index.
+
+### 2026-06-07 — Phase 3: L05 built (first runnable lesson)
+- Built **L05 `lessons/05-minimal-end-to-end-rag/`** (type `theory+practice`, prereq L04) via the
+  `authoring-lessons` skill — the handbook's **first runnable lesson**. Teaches the orchestration-framework
+  layer and wires a naive RAG end-to-end with **LangChain**: load (`TextLoader`) → chunk
+  (`RecursiveCharacterTextSplitter`, 500/50) → embed+index (`OllamaEmbeddings` + `InMemoryVectorStore`) →
+  retrieve (top-k=3 via `as_retriever`) → augment+generate (`ChatOllama`, grounded+abstaining prompt, LCEL
+  `prompt | llm | parser`). `README.md` + `demo.py` + a **throwaway toy** help-desk corpus in `data/`
+  (5 fictional "Acme Cloud" articles — flagged in-lesson as not a real product and **not** an eval dataset).
+- **Ran it for real** (`uv run python -m lessons.05-minimal-end-to-end-rag.demo`) against the remote Ollama
+  host from `.env`; pasted the real output (5 docs → 10 chunks → 2560-dim vectors → top-3 chunks from 2 docs →
+  grounded answer fusing cancellation + refund). Flagged: LLM generation not bit-for-bit deterministic even
+  at temp 0; retrieved chunks stable, prose varies. Validator green; ruff clean; pytest 2/2.
+- **Decisions (verified, not from memory):** generator `qwen3:14b`, embeddings `qwen3-embedding:4b` (both on
+  the user's remote host, confirmed via `/api/tags`); vector store `InMemoryVectorStore` (in-RAM dict, no
+  persistence — recomputed each run; verified by inspecting the installed class). **Integration = `langchain-ollama`**
+  (added `>=0.3,<0.4` → resolved `0.3.10`): corrected the user's assumption with **PyPI metadata** — the RAGAS
+  bug only caps langchain/core/community to 0.3.x; `langchain-ollama` 0.3.x requires `langchain-core<1.0`, so it
+  is compatible. The "no langchain-ollama" note in CLAUDE.md was scoped to the RAGAS *judge* path only. Whole
+  stack stays 0.3.x (`langchain-core 0.3.86`, `ragas 0.4.3` intact).
+- **Config refactor (`ragas_lab/config.py`):** added `ollama_chat_model` (reads `OLLAMA_CHAT_MODEL`, or the
+  legacy `OLLAMA_MODEL` via `AliasChoices`); `demo.py` now sources **all three** knobs (endpoint, chat, embed)
+  from `settings`/`.env` — no hardcoded model names. Verified base_url/chat/embed resolve from `.env` by running.
+- **Registry change:** `docs/sources.md` §14 gained two **verified** framework-doc entries — LangChain RAG
+  tutorial and the LangChain ChatOllama/OllamaEmbeddings integration pages (pages live HTTP 200 2026-06-07; API
+  behavior additionally verified by execution). Conceptual claims reuse already-verified §1 (Gao, Lewis,
+  Lost-in-the-Middle) and §14 (Anthropic grounding/abstention). Framework patterns cross-checked via Context7
+  before writing.
+- **Lesson prose** kept model-agnostic on user feedback (stages 3/5 say "a local embedding/chat model … set in
+  `.env`"); concrete model names remain only where they document the actual shown run + in Sources `[5]`.
+- **Backlog opened:** build a serious eval dataset (ground truth, `datasets/`) for L06+; pin the RAGAS judge
+  model (default `mistral` absent on host) before L06+ eval runs.
+- **Left off at:** L05 done & user-approved; committing & pushing this session. **Next: L06
+  `why-evaluation-is-hard`** (`theory`, prereq L05) — the pivot into evaluation; build the first real dataset there.
