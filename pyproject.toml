@@ -23,6 +23,8 @@ dependencies = [
     "pydantic-settings>=2.6",
     "python-dotenv>=1.0",
     "langchain-ollama>=0.3,<0.4",
+    "pypdf>=6.13.0",
+    "pdfplumber>=0.11.9",
 ]
 
 [dependency-groups]
@@ -32,6 +34,7 @@ dev = [
     "ruff>=0.8",
     "taskipy>=1.13",
     "pre-commit>=4.6.0",
+    "reportlab>=4.5.1",
 ]
 
 # No [build-system] on purpose: this is a uv "virtual" project. uv (>= 0.4)

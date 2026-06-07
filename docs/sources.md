@@ -303,11 +303,28 @@ added §14 + entries to §1/§3; all fetched at the primary this session).
 ## 13. Ingestion & data pipeline
 
 - **[Unstructured — Partitioning](https://docs.unstructured.io/open-source/core-functionality/partitioning)**
-  — Unstructured. Official docs. **high**. Backs: loading/parsing raw documents (PDF/HTML/…) into structured elements for ingestion.
+  — Unstructured. Official docs. **high**. Backs: loading/parsing raw documents (PDF/HTML/…) into structured elements for ingestion. *Note: the verbatim "partitioning a document returns a list of document `Element` objects" framing and the typed element names (`Title`, `NarrativeText`, `ListItem`, `Table`, …) live on the companion [Document elements](https://docs.unstructured.io/open-source/concepts/document-elements) concepts page; the partitioning page documents the per-format `partition_*` functions. Both verified 2026-06-07.*
 - **[LayoutLMv3: Pre-training for Document AI with Unified Text and Image Masking](https://arxiv.org/abs/2204.08387)**
-  — Huang, Lv, Cui, Lu, Wei (Microsoft). ACM MM 2022. **high**. Backs: layout-aware extraction (reading order, structure) for complex documents.
+  — Huang, Lv, Cui, Lu, Wei (Microsoft). ACM MM 2022. **high**. Backs: document understanding combines text with layout/image, because a document's 2-D structure is information the plain text stream alone loses. *Verified caveat (2026-06-07): the abstract's verbatim contribution is "unified text and image masking"; the words "reading order" and "layout/spatial" are **not** in the abstract — treat "reading order" as our framing / the general LayoutLM-family premise, body-sourced, not an abstract quote.*
 - **[PubTables-1M: Towards Comprehensive Table Extraction from Unstructured Documents](https://arxiv.org/abs/2110.00061)**
-  — Smock, Pesala, Abraham (Microsoft). CVPR 2022. **high**. Backs: table detection & structure recognition in ingestion.
+  — Smock, Pesala, Abraham (Microsoft). CVPR 2022. **high**. Backs: table extraction is a distinct problem comprising — verbatim from the abstract — "all three tasks of detection, structure recognition, and functional analysis." *Verified 2026-06-07; "rows/columns must be recovered" is our gloss of structure recognition, not abstract wording.*
+
+### Document-parsing tools (used in / cited by Lesson 07)
+
+Tool docs treated like the §3/§14 framework references: authoritative for the tool's own behavior, not peer-reviewed concepts. The conceptual claims above (Unstructured/LayoutLMv3/PubTables-1M) carry the *why*; these carry the *how*. **The broader catalogue of parsing/OCR/HTML tools lives in [`lessons/07-document-loading-and-parsing/appendix-parsing-tools.md`](../lessons/07-document-loading-and-parsing/appendix-parsing-tools.md)** — a self-verified reference surface alongside Lesson 07; only the tools an actual lesson cites are duplicated into this registry.
+
+- **[pdfplumber](https://github.com/jsvine/pdfplumber)**
+  — J. Singer-Vine (jsvine). Official repo/docs. **high**. Backs: layout-aware PDF extraction — `extract_text(layout=True)` mimics visual geometry, default `extract_text()` reads top-to-bottom across the page, and `extract_table()` recovers a table's 2-D grid as rows/columns. *API verified by execution this session (pdfplumber 0.11.9) and via Context7.*
+- **[pypdf](https://github.com/py-pdf/pypdf)**
+  — py-pdf maintainers. Official repo/docs. **high**. Backs: naive PDF text extraction (`PdfReader(...).pages[i].extract_text()`) returns glyphs in content-stream order with no structural typing. *Verified by execution this session (pypdf 6.13.0).*
+- **[MarkItDown](https://github.com/microsoft/markitdown)**
+  — Microsoft. Official repo. **medium** (single-vendor tool). Backs: converting PDF/Office/HTML/etc. to LLM-friendly **Markdown** for ingestion; explicitly "meant to be consumed by text-analysis tools … not the best option for high-fidelity document conversions for human consumption." *Verified at the repo 2026-06-07.*
+- **[PyMuPDF](https://github.com/pymupdf/PyMuPDF)**
+  — Artifex Software (built on MuPDF). Official repo. **high** (authoritative for the tool). Backs: fast PDF text/layout extraction with position metadata. *Licensing caveat: GNU AGPL v3 (commercial use needs a license from Artifex). Verified 2026-06-07.*
+- **[trafilatura](https://github.com/adbar/trafilatura)**
+  — A. Barbaresi (adbar). Official repo/docs. **high** (authoritative for the tool). Backs: HTML **main-content** extraction — strips boilerplate (nav/ads/footers) to keep the article text. *Heuristic extractor; quality varies by page. Verified 2026-06-07.*
+- **[LangChain — Document loaders](https://python.langchain.com/docs/concepts/document_loaders/)**
+  — LangChain. Official docs. **high**. Backs: a uniform `Document`-loading interface whose concrete loaders (`PyPDFLoader`, `UnstructuredLoader`, …) wrap underlying parsers (pypdf, unstructured) behind one API. *Page live 2026-06-07; per-loader wrapping cross-checked against the integrations index.*
 - **[Deduplicating Training Data Makes Language Models Better](https://arxiv.org/abs/2107.06499)**
   — Lee, Ippolito, et al. (Google/UPenn). ACL 2022. **high**. Backs: corpus deduplication (exact + near-dup) as ingestion hygiene.
 

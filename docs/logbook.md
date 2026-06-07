@@ -55,11 +55,11 @@ Phased build:
 |------|-----------|--------|
 | `CLAUDE.md` | Working principles (evidence rules, language, lesson conventions). Read first. | Reframed to build+evaluate; points to this logbook. |
 | `docs/handbook-method.md` | The pedagogical method + lesson anatomy + registry rules. | Reframed to build+evaluate. |
-| `docs/sources.md` | Verified source registry (§1–§14). Lessons cite only from here. | ~93 sources, all verified. "To verify" section empty. §14 (build engineering) added 2026-06-06. §12 gained Mikolov et al. NAACL 2013 (*Linguistic Regularities*) for L02; word2vec entry re-scoped (it does not originate the king/queen analogy). L04 used existing §1 entries (no new sources); fixed RAG-vs-LC affiliation Google → **Google DeepMind**. L05 added two §14 framework-doc entries (LangChain RAG tutorial; LangChain ChatOllama/OllamaEmbeddings integration pages) — pages live (HTTP 200) + API verified by execution. |
+| `docs/sources.md` | Verified source registry (§1–§14). Lessons cite only from here. | ~93 sources, all verified. "To verify" section empty. §14 (build engineering) added 2026-06-06. §12 gained Mikolov et al. NAACL 2013 (*Linguistic Regularities*) for L02; word2vec entry re-scoped (it does not originate the king/queen analogy). L04 used existing §1 entries (no new sources); fixed RAG-vs-LC affiliation Google → **Google DeepMind**. L05 added two §14 framework-doc entries (LangChain RAG tutorial; LangChain ChatOllama/OllamaEmbeddings integration pages) — pages live (HTTP 200) + API verified by execution. **L07 (2026-06-07): §13 corrected/extended** — Unstructured note re-pointed to the Document-elements concepts page; LayoutLMv3 re-scoped (abstract = "unified text and image masking"; "reading order" flagged as our framing, not abstract wording); PubTables-1M quote fixed to the verbatim "detection, structure recognition, and functional analysis"; added a **Document-parsing tools** sub-block (pdfplumber, pypdf, MarkItDown, PyMuPDF, trafilatura, LangChain document loaders) + a pointer to the new L07 appendix. |
 | `docs/concept-map.md` | Concept universe + module dependency graph (M0–M14), each concept tagged to a source. | Expanded; build+evaluate scope. Build-side audit (2026-06-06) added architecture/generation-craft/vector-layer/text-to-SQL/reliability; M13 distributed to stages; ingestion+retrieval split into M2/M3. All tag refs resolve to the registry. |
 | `docs/syllabus.md` | Phase-2 artifact: the ordered lesson plan derived from the concept map. | **APPROVED — 39 lessons (re-approved 2026-06-06).** Was 38; inserted L17 `learned-sparse-retrieval` (SPLADE/COIL) after hybrid (L16); renumbered former 17–38 → 18–39; prereqs remapped; no-forward-ref re-checked (executed, passes). Phase 3 builds from here (L01–L02 done). |
 | `.claude/skills/authoring-lessons/` | Skill to author lessons (SKILL.md + lesson-template.md + tested `scripts/validate_lesson.py`). | Working; validator tested. |
-| `lessons/` | One folder per lesson (built in Phase 3). | **L01–L06 DONE** (`01-llms-tokens-and-prompting`, `02-embeddings-and-search`, `03-why-rag-and-what-it-is`, `04-architecture-and-model-strategy` — all theory; **`05-minimal-end-to-end-rag` — first `theory+practice`, runnable `demo.py`**; **`06-why-evaluation-is-hard` — theory, the pivot into evaluation**; validator green; user-reviewed). Plus `README.md` conventions + built-lessons index. |
+| `lessons/` | One folder per lesson (built in Phase 3). | **L01–L07 DONE** (`01-llms-tokens-and-prompting`, `02-embeddings-and-search`, `03-why-rag-and-what-it-is`, `04-architecture-and-model-strategy` — all theory; **`05-minimal-end-to-end-rag` — first `theory+practice`, runnable `demo.py`**; **`06-why-evaluation-is-hard` — theory, the pivot into evaluation**; **`07-document-loading-and-parsing` — `theory+practice`, opens Part II (Ingestion); runnable `demo.py` parses one PDF four ways; ships a co-located `appendix-parsing-tools.md`**; validator green; user-reviewed). Plus `README.md` conventions + built-lessons index. |
 | `ragas_lab/` | Shared importable infra: `config.py` (pydantic-settings), `clients.py` (RAGAS judge LLM + embeddings via Ollama). | Working; `uv run pytest` green. |
 | `tests/` | Smoke tests for the scaffolding. | 2 passing. |
 
@@ -211,15 +211,35 @@ vague to survive renumbering).
 L06 is theory and the dataset isn't *used* until L21 (`retrieval-metrics`). The serious golden dataset
 moves to its own design session **near L21** (see the updated backlog note below).
 
-**Next session: build L07 `document-loading-and-parsing`** (type **`theory+practice`**, prereq L05) via the
-`authoring-lessons` skill — the start of **Part II (Ingestion, M2)**: loading/parsing PDF/HTML/scanned files,
-layout-aware extraction (reading order, structure), and tables. Per skill step 5 the practice arm must **run**
-(`uv run python -m lessons.07-document-loading-and-parsing.demo`) with **real output pasted**; verify framework
-APIs via Context7 first. Candidate §13 sources already in the registry (Unstructured, LayoutLMv3, PubTables-1M)
-— do deep per-lesson research and verify any new claim at the primary. Build strictly in syllabus order; each
-lesson's `## Prerequisites` = the lower-numbered lessons in its syllabus row; per skill step 7, add L07's row to
-the `lessons/README.md` index. (Note: L07's only syllabus prereq is **05** — ingestion branches off the baseline,
-not off L06.)
+**L07 `document-loading-and-parsing` is DONE** (type `theory+practice`, prereq L05) — opens **Part II
+(Ingestion, M2)**. Teaches that a document *file* is not usable *text*: **loading** (recover characters)
+vs **parsing** (recover structure); **reading order is inferred, not stored** (different parsers guess
+differently — neither "buggy"); **tables are 2-D** and flattening destroys the grid; **OCR** is the
+mandatory first stage for scans (taught, not run); and a tool-selection rule ("choose by the structure you
+cannot afford to lose"). Runnable `demo.py` parses **one generated PDF four ways** and pastes real output:
+pypdf (content-stream order — columns OK by luck, table flattened), pdfplumber default (geometry order —
+columns *interleaved*, a reproducible reading-order scramble), pdfplumber `layout=True` (geometry visible),
+pdfplumber `extract_table` (grid recovered → Markdown). Pure parsing, **no LLM/network → fully
+reproducible** (`pypdf` 6.13.0, `pdfplumber` 0.11.9). Deps added: `pypdf`/`pdfplumber` (runtime),
+`reportlab` (dev-only; generates the committed PDF fixture via `make_sample_pdf.py`); pinned ragas/langchain
+stack intact. **Registry impact:** §13 corrected (Unstructured note → concepts page; **LayoutLMv3 re-scoped**
+— abstract is "unified text and image masking", "reading order" is our framing not the abstract's word;
+**PubTables-1M** quote fixed to verbatim "detection, structure recognition, and functional analysis") and a
+**Document-parsing tools** sub-block added — all re-verified at the primary by a subagent + Context7/execution.
+Also shipped a **co-located reference appendix** `lessons/07-…/appendix-parsing-tools.md` — a self-verified
+catalogue of PDF/OCR/HTML tools (no exact star/price figures; GitHub libs ordered by stars; license + honest
+limit per tool; honesty ledger), with pointers from `docs/sources.md`, the root `README.md`, and L07 itself.
+Validator green; lint clean; pytest 2/2; user-reviewed.
+
+**Next session: build L08 `cleaning-and-deduplication`** (type **`theory+practice`**, prereq **07**) via the
+`authoring-lessons` skill — the second **Part II (Ingestion, M2)** lesson: cleaning/normalization (strip the
+boilerplate parsing left behind) and **near-duplicate removal** so the top-k isn't crowded with near-identical
+chunks. Per skill step 5 the practice arm must **run** (`uv run python -m lessons.08-cleaning-and-deduplication.demo`)
+with **real output pasted**; verify framework APIs via Context7 first. Candidate registry source already present:
+**§13 Deduplication** (Lee et al., *Deduplicating Training Data Makes LMs Better*, ACL 2022) — do deep per-lesson
+research and verify any new claim at the primary. Build strictly in syllabus order; `## Prerequisites` = the
+lower-numbered lessons in its syllabus row (L08's only prereq is **07**); per skill step 7, add L08's row to the
+`lessons/README.md` index.
 
 (Scope alignment across `CLAUDE.md`, `README.md`, `handbook-method.md`, and the
 authoring skill/template is **done** — all now framed as "build + evaluate".)
@@ -567,3 +587,47 @@ authoring skill/template is **done** — all now framed as "build + evaluate".)
   `document-loading-and-parsing`** (`theory+practice`, prereq **05** — ingestion branches off the baseline,
   not L06) — start of Part II (Ingestion, M2). Practice arm must run with real output; verify framework APIs
   via Context7; §13 sources (Unstructured/LayoutLMv3/PubTables-1M) already in the registry.
+
+### 2026-06-07 — Phase 3: L07 built (opens Part II — Ingestion) + parsing-tools appendix
+- Built **L07 `lessons/07-document-loading-and-parsing/`** (type `theory+practice`, prereq L05) via the
+  `authoring-lessons` skill — the first **Ingestion (M2)** lesson. Theory in four ideas + ecosystem: (1) a
+  document *file* is not text — **loading** (recover characters) vs **parsing** (recover structure, modeled as
+  a list of typed `Element`s [Unstructured]); (2) **reading order is inferred, not stored** — parsers guess,
+  and a wrong guess scrambles multi-column text [LayoutLMv3]; (3) **tables are 2-D**, flattening destroys the
+  grid — extraction = detection + structure recognition + functional analysis [PubTables-1M]; (4) **OCR** is
+  the mandatory first stage for scans (taught, not run); plus a tool map and the rule "choose by the structure
+  you cannot afford to lose."
+- **Runnable practice, fully reproducible (no LLM/network):** `make_sample_pdf.py` (ReportLab, dev-only)
+  generates a committed two-column + pricing-table PDF fixture; `demo.py` parses it **four ways** and pastes
+  **real output** — pypdf content-stream order (columns correct *by luck*, table flattened to a cell stream),
+  pdfplumber default geometry order (**columns interleaved** — a real, reproducible reading-order scramble),
+  pdfplumber `layout=True` (geometry visible), pdfplumber `extract_table` (grid recovered → serialized to
+  Markdown). The honest centerpiece is that the *same bytes* become usable or useless purely by whether
+  structure was recovered. Ran `uv run python -m lessons.07-…​.demo`; validator green; ruff clean; pytest 2/2.
+- **Deps:** added `pypdf` (6.13.0) + `pdfplumber` (0.11.9) as runtime deps and `reportlab` (4.5.1) as a
+  **dev-only** group (the demo doesn't import it; the PDF is committed). Confirmed the pinned RAGAS↔langchain
+  0.3.x stack stayed intact after the add.
+- **Verification first (subagents + Context7), every claim re-fetched at the primary** before writing. Three
+  registry corrections fell out of it (all in §13): the Unstructured "list of `Element` objects" framing lives
+  on the **Document-elements concepts page** (not the partitioning URL) — note re-pointed; **LayoutLMv3** abstract
+  is verbatim "unified text and image masking" — **"reading order" is our framing / family premise, NOT abstract
+  wording** (flagged in-lesson and in the registry); **PubTables-1M** quote fixed to the verbatim "detection,
+  structure recognition, and functional analysis" ("rows/columns" is our gloss). Added a **Document-parsing
+  tools** sub-block to §13 (pdfplumber, pypdf, MarkItDown, PyMuPDF, trafilatura, LangChain document loaders),
+  each verified at its repo/docs.
+- **In-lesson honesty flags:** pypdf's "correct" two-column order is *contingent on the file's write order*, not
+  parser intelligence; "reading order" attributed as our framing not LayoutLMv3's abstract; parsing a table ≠
+  querying it (text-to-SQL deferred to L20, no forward ref); OCR conceptual only (not a sourced engine claim).
+- **Shipped a co-located reference appendix** `lessons/07-…/appendix-parsing-tools.md` (after a brainstorming
+  pass on placement/rigor; user chose: single doc, **inside the lesson folder**, self-verified, registry only
+  for lesson-cited tools). Covers **PDF / OCR / HTML** tools — selection-criteria primer, grouped tables, per-tool
+  license + honest limit, decision guides, and an honesty ledger. Per user instruction: **no exact star/price
+  figures**; GitHub libraries **ordered by stars (descending)** with caveats where the count misleads
+  (`newspaper3k` popular-but-unmaintained → use `newspaper4k`; Kraken hosted off-GitHub; TrOCR not a standalone
+  repo). OCR + HTML landscapes were freshly verified at primaries (repos/official docs + GitHub API for
+  license/stars) by research subagents. Pointers added from `docs/sources.md` §13, the root `README.md`, and the
+  L07 ecosystem section; all relative links resolve.
+- **Left off at:** L07 + appendix done & user-approved; shipping this session (commit + push on `main`). **Next:
+  L08 `cleaning-and-deduplication`** (`theory+practice`, prereq **07**) — cleaning/normalization + near-duplicate
+  removal; §13 Deduplication (Lee et al., ACL 2022) already in the registry; practice arm must run with real
+  output; verify framework APIs via Context7; add L08's index row.

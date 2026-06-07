@@ -17,6 +17,10 @@ for the index of lessons built so far; the full plan is in
 [`docs/syllabus.md`](./docs/syllabus.md) (39 lessons, built one at a time in
 dependency order).
 
+Some lessons carry a reference appendix alongside them — e.g.
+[`lessons/07-…/appendix-parsing-tools.md`](./lessons/07-document-loading-and-parsing/appendix-parsing-tools.md),
+a verified catalogue of PDF / OCR / HTML parsing tools.
+
 ## Stack
 
 - **uv** — environment + dependency management (`.python-version` pins 3.12)
