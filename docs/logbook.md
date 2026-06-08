@@ -55,11 +55,11 @@ Phased build:
 |------|-----------|--------|
 | `CLAUDE.md` | Working principles (evidence rules, language, lesson conventions). Read first. | Reframed to build+evaluate; points to this logbook. |
 | `docs/handbook-method.md` | The pedagogical method + lesson anatomy + registry rules. | Reframed to build+evaluate. |
-| `docs/sources.md` | Verified source registry (§1–§14). Lessons cite only from here. | ~93 sources, all verified. "To verify" section empty. §14 (build engineering) added 2026-06-06. §12 gained Mikolov et al. NAACL 2013 (*Linguistic Regularities*) for L02; word2vec entry re-scoped (it does not originate the king/queen analogy). L04 used existing §1 entries (no new sources); fixed RAG-vs-LC affiliation Google → **Google DeepMind**. L05 added two §14 framework-doc entries (LangChain RAG tutorial; LangChain ChatOllama/OllamaEmbeddings integration pages) — pages live (HTTP 200) + API verified by execution. **L07 (2026-06-07): §13 corrected/extended** — Unstructured note re-pointed to the Document-elements concepts page; LayoutLMv3 re-scoped (abstract = "unified text and image masking"; "reading order" flagged as our framing, not abstract wording); PubTables-1M quote fixed to the verbatim "detection, structure recognition, and functional analysis"; added a **Document-parsing tools** sub-block (pdfplumber, pypdf, MarkItDown, PyMuPDF, trafilatura, LangChain document loaders) + a pointer to the new L07 appendix. |
+| `docs/sources.md` | Verified source registry (§1–§14). Lessons cite only from here. | ~93 sources, all verified. "To verify" section empty. §14 (build engineering) added 2026-06-06. **L08 (2026-06-08):** §13 extended — Lee et al. note made precise (ExactSubstr/NearDup tools; scope flagged as LM-pretraining, not RAG); **UAX #15** added (NFC/NFKC, with the lossy-compatibility caveat) and **W3C Character Model for the World Wide Web: String Matching** added (NFC as recommended default; transcode-to-UTF-8 first); §4 IIR note extended for Ch. 19 §19.6 (near-duplicate detection: shingling/Jaccard/MinHash). §12 gained Mikolov et al. NAACL 2013 (*Linguistic Regularities*) for L02; word2vec entry re-scoped (it does not originate the king/queen analogy). L04 used existing §1 entries (no new sources); fixed RAG-vs-LC affiliation Google → **Google DeepMind**. L05 added two §14 framework-doc entries (LangChain RAG tutorial; LangChain ChatOllama/OllamaEmbeddings integration pages) — pages live (HTTP 200) + API verified by execution. **L07 (2026-06-07): §13 corrected/extended** — Unstructured note re-pointed to the Document-elements concepts page; LayoutLMv3 re-scoped (abstract = "unified text and image masking"; "reading order" flagged as our framing, not abstract wording); PubTables-1M quote fixed to the verbatim "detection, structure recognition, and functional analysis"; added a **Document-parsing tools** sub-block (pdfplumber, pypdf, MarkItDown, PyMuPDF, trafilatura, LangChain document loaders) + a pointer to the new L07 appendix. |
 | `docs/concept-map.md` | Concept universe + module dependency graph (M0–M14), each concept tagged to a source. | Expanded; build+evaluate scope. Build-side audit (2026-06-06) added architecture/generation-craft/vector-layer/text-to-SQL/reliability; M13 distributed to stages; ingestion+retrieval split into M2/M3. All tag refs resolve to the registry. |
 | `docs/syllabus.md` | Phase-2 artifact: the ordered lesson plan derived from the concept map. | **APPROVED — 39 lessons (re-approved 2026-06-06).** Was 38; inserted L17 `learned-sparse-retrieval` (SPLADE/COIL) after hybrid (L16); renumbered former 17–38 → 18–39; prereqs remapped; no-forward-ref re-checked (executed, passes). Phase 3 builds from here (L01–L02 done). |
 | `.claude/skills/authoring-lessons/` | Skill to author lessons (SKILL.md + lesson-template.md + tested `scripts/validate_lesson.py`). | Working; validator tested. |
-| `lessons/` | One folder per lesson (built in Phase 3). | **L01–L07 DONE** (`01-llms-tokens-and-prompting`, `02-embeddings-and-search`, `03-why-rag-and-what-it-is`, `04-architecture-and-model-strategy` — all theory; **`05-minimal-end-to-end-rag` — first `theory+practice`, runnable `demo.py`**; **`06-why-evaluation-is-hard` — theory, the pivot into evaluation**; **`07-document-loading-and-parsing` — `theory+practice`, opens Part II (Ingestion); runnable `demo.py` parses one PDF four ways; ships a co-located `appendix-parsing-tools.md`**; validator green; user-reviewed). Plus `README.md` conventions + built-lessons index. |
+| `lessons/` | One folder per lesson (built in Phase 3). | **L01–L08 DONE** (`01-llms-tokens-and-prompting`, `02-embeddings-and-search`, `03-why-rag-and-what-it-is`, `04-architecture-and-model-strategy` — all theory; **`05-minimal-end-to-end-rag` — first `theory+practice`, runnable `demo.py`**; **`06-why-evaluation-is-hard` — theory, the pivot into evaluation**; **`07-document-loading-and-parsing` — `theory+practice`, opens Part II (Ingestion); runnable `demo.py` parses one PDF four ways; ships a co-located `appendix-parsing-tools.md`**; **`08-cleaning-and-deduplication` — `theory+practice`, 2nd Ingestion lesson; normalization (NFC/NFKC) vs cleaning vs dedup, exact (hash) + near-dup (shingling+Jaccard/MinHash), top-k crowding; stdlib-only reproducible `demo.py`, no LLM/network**; validator green; user-reviewed). Plus `README.md` conventions + built-lessons index. |
 | `ragas_lab/` | Shared importable infra: `config.py` (pydantic-settings), `clients.py` (RAGAS judge LLM + embeddings via Ollama). | Working; `uv run pytest` green. |
 | `tests/` | Smoke tests for the scaffolding. | 2 passing. |
 
@@ -97,7 +97,7 @@ Phased build:
   (lessons index, README link, authoring-skill step 7); latest on `main` is the L03
   set. Commit only when the user asks.
 
-## Current state (as of 2026-06-07)
+## Current state (as of 2026-06-08)
 
 - Phases 0 and 1 complete. Concept map expanded after **two adversarial audits**
   (a 3-lens pass, then a deeper 5-lens pass) to a full build+evaluate scope:
@@ -231,15 +231,16 @@ catalogue of PDF/OCR/HTML tools (no exact star/price figures; GitHub libs ordere
 limit per tool; honesty ledger), with pointers from `docs/sources.md`, the root `README.md`, and L07 itself.
 Validator green; lint clean; pytest 2/2; user-reviewed.
 
-**Next session: build L08 `cleaning-and-deduplication`** (type **`theory+practice`**, prereq **07**) via the
-`authoring-lessons` skill — the second **Part II (Ingestion, M2)** lesson: cleaning/normalization (strip the
-boilerplate parsing left behind) and **near-duplicate removal** so the top-k isn't crowded with near-identical
-chunks. Per skill step 5 the practice arm must **run** (`uv run python -m lessons.08-cleaning-and-deduplication.demo`)
-with **real output pasted**; verify framework APIs via Context7 first. Candidate registry source already present:
-**§13 Deduplication** (Lee et al., *Deduplicating Training Data Makes LMs Better*, ACL 2022) — do deep per-lesson
-research and verify any new claim at the primary. Build strictly in syllabus order; `## Prerequisites` = the
-lower-numbered lessons in its syllabus row (L08's only prereq is **07**); per skill step 7, add L08's row to the
-`lessons/README.md` index.
+**Next session: build L09 `chunking-strategies`** (type **`theory+practice`**, prereq **07**) via the
+`authoring-lessons` skill — the third **Part II (Ingestion, M2)** lesson: **fixed-size vs structural/semantic
+chunking** and the **chunk-size / retrieval-granularity** trade-off (the unit you actually embed and retrieve).
+Takes the clean, deduplicated text from L08 and the typed structure from L07 and decides how to *split* it. Per
+skill step 5 the practice arm must **run** (`uv run python -m lessons.09-chunking-strategies.demo`) with **real
+output pasted**; verify framework APIs via Context7 first (LangChain `RecursiveCharacterTextSplitter` was used in
+L05 — build on it). Candidate registry source already present: **§3 Dense X Retrieval** (Chen et al., EMNLP 2024,
+retrieval-unit granularity / propositions) and **§9 Searching for Best Practices** (chunk-size study) — do deep
+per-lesson research and verify any new claim at the primary. `## Prerequisites` = its syllabus row (L09's only
+prereq is **07**); per skill step 7, add L09's row to the `lessons/README.md` index.
 
 (Scope alignment across `CLAUDE.md`, `README.md`, `handbook-method.md`, and the
 authoring skill/template is **done** — all now framed as "build + evaluate".)
@@ -631,3 +632,41 @@ authoring skill/template is **done** — all now framed as "build + evaluate".)
   L08 `cleaning-and-deduplication`** (`theory+practice`, prereq **07**) — cleaning/normalization + near-duplicate
   removal; §13 Deduplication (Lee et al., ACL 2022) already in the registry; practice arm must run with real
   output; verify framework APIs via Context7; add L08's index row.
+
+### 2026-06-08 — Phase 3: L08 built (2nd Ingestion lesson) + registry additions
+- Built **L08 `lessons/08-cleaning-and-deduplication/`** (type `theory+practice`, prereq L05→**07**) via the
+  `authoring-lessons` skill — the cleanup crew for what parsing leaves behind. Teaches three distinct jobs in
+  order: **normalization** (Unicode NFC/NFKC) vs **cleaning** (boilerplate/whitespace) vs **deduplication**; then
+  **exact** (hash of cleaned text) vs **near-duplicate** removal (k-shingles + Jaccard, MinHash at scale), and why
+  exact hashing silently misses near-dups; closes with the RAG-specific payoff — duplicates **crowd the top-k**.
+- **Runnable practice, fully reproducible (stdlib only, no LLM/network):** `demo.py` over a tiny fictional
+  "Acme Cloud" corpus with deliberately messy Unicode. Five sections, real output pasted: (1) NFKC folds NBSP/ﬁ
+  + the café NFC-vs-NFD equality; (2) boilerplate strip; (3) exact dedup drops D5 (same content, different
+  boilerplate — caught only on *cleaned* text) 7→6; (4) shingling catches the refund trio at J=0.92, 6→4; (5)
+  top-3 before = 3 refund copies, after = 1 + freed slots. **Two design bugs surfaced by running it and fixed**:
+  a footer-regex that didn't fold "Was this helpful?" (broke D1==D5), and a too-short corpus/threshold that left
+  the refund trio at J=0.76 (below 0.8) — lengthened the shared body + switched the retriever stand-in to
+  query-term overlap (Jaccard penalized the long docs). Added `ruff.toml` `per-file-ignores` for RUF001/2/3 (the
+  "ambiguous" Unicode is the lesson's test data). Validator green; lint clean; pytest 2/2. **No new runtime deps.**
+- **Verification first (subagent + primary fetches), every claim re-checked at the primary** before writing.
+  **Registry impact (§13/§4):** Lee et al. note made precise (ExactSubstr suffix-array + NearDup tools; **scope
+  flagged — LM *pretraining* data, not RAG; the "dedup your RAG corpus" + top-k argument is our inference**);
+  **added UAX #15** (NFC/NFKC; the **compatibility forms are lossy** — `¼→1/4`, `x²→x2` — verified §1.1) and the
+  **W3C Character Model: String Matching** (NFC as the recommended default; transcode legacy→UTF-8 first);
+  **§4 IIR note extended** for Ch. 19 §19.6 (shingling/Jaccard/MinHash). All verified at primaries 2026-06-08.
+- **Follow-up Q&A woven into the lesson (user-driven, each verified):** clarified that a single "always-safe"
+  cleaning step does *not* exist — even NFKC is lossy; **NFC** is the conservative default (W3C `SHOULD`); UTF-8
+  transcoding is the near-universal precondition but the real risk is decoding from the *correct* source encoding
+  (mojibake); **loaders return `str` but do NOT normalize** (page_content confirmed via Context7 → added LangChain
+  Document loaders as L08 source [6]); and a **non-English note** (NFC matters far more once text leaves ASCII —
+  accents/ñ precomposed-vs-decomposed; do not strip diacritics). Added a **pipeline-placement diagram** — first
+  drafted before the concept sections, then **moved to the end of "The concept"** (synthesis after the pieces are
+  taught) on user feedback about gradual-release ordering.
+- **In-lesson honesty flags:** dedup ordering is engineering convention not a law; Lee scoped to pretraining;
+  NFKC's lossiness called out; the retriever stand-in in §5 is a lexical proxy for L05's vector retriever
+  (crowding is metric-agnostic); near-dup threshold is a tunable knob (no universal value).
+- **Left off at:** L08 done & user-approved; shipping this session (commit + push on `main`). **Next: L09
+  `chunking-strategies`** (`theory+practice`, prereq **07**) — fixed-size vs structural/semantic chunking + the
+  chunk-size/granularity trade-off; build on L05's `RecursiveCharacterTextSplitter`; candidate sources §3 Dense X
+  Retrieval + §9 Searching for Best Practices already in the registry; practice arm must run with real output;
+  verify framework APIs via Context7; add L09's index row.

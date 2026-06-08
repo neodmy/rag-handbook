@@ -18,6 +18,7 @@ are built one at a time in syllabus order. Built so far:
 | 05 | [A Minimal End-to-End RAG](./05-minimal-end-to-end-rag/README.md) | theory+practice | First runnable pipeline (load→chunk→embed→retrieve→augment→generate) with LangChain + a local Ollama model; the baseline the handbook measures/improves |
 | 06 | [Why Evaluation Is Hard](./06-why-evaluation-is-hard/README.md) | theory | Eval targets (retrieval vs generation); error attribution & the recall ceiling; reference-based vs reference-free; offline vs online; abstention & robustness as targets; baselines & ablation |
 | 07 | [Document Loading and Parsing](./07-document-loading-and-parsing/README.md) | theory+practice | A file is not text: loading vs parsing; reading order is inferred not stored; tables are 2-D (flattening destroys them); OCR for scans; the parser ecosystem & how to choose — with a real PDF parsed four ways |
+| 08 | [Cleaning and Deduplication](./08-cleaning-and-deduplication/README.md) | theory+practice | Why parsed text is still not index-ready: normalization (Unicode NFC/NFKC) vs cleaning (boilerplate) vs deduplication; exact vs near-duplicate removal (shingling + Jaccard / MinHash); duplicates crowd the top-k — demonstrated on a messy corpus |
 
 Each lesson:
 

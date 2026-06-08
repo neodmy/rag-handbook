@@ -4,5 +4,10 @@ target-version = "py312"
 [lint]
 select = ["E", "F", "W", "I", "N", "UP", "B", "SIM", "RUF"]
 
+[lint.per-file-ignores]
+# Lesson 08 teaches Unicode normalization, so its demo deliberately contains
+# "ambiguous" characters (smart quotes, NBSP, the fi ligature) as test data.
+"lessons/08-cleaning-and-deduplication/demo.py" = ["RUF001", "RUF002", "RUF003"]
+
 [format]
 quote-style = "double"
